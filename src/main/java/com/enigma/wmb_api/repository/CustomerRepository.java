@@ -1,4 +1,7 @@
-package com.enigma.wmb_api;
+package com.enigma.wmb_api.repository;
 
-public interface CustomerRepository {
+import com.enigma.wmb_api.entity.Customer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CustomerRepository extends JpaRepository<Customer, String> {
 }
