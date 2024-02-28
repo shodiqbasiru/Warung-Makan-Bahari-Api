@@ -6,6 +6,7 @@ import com.enigma.wmb_api.dto.response.ResponseHandler;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +65,7 @@ public class CustomerController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> findById(@PathVariable String id){
+    public ResponseEntity<Object> findById(@PathVariable String id) {
         try {
             Customer result = customerService.getById(id);
             return ResponseHandler.generateResponse(
@@ -85,7 +86,7 @@ public class CustomerController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> update(@RequestBody Customer request){
+    public ResponseEntity<Object> update(@RequestBody Customer request) {
         try {
             Customer result = customerService.update(request);
             return ResponseHandler.generateResponse(
@@ -105,7 +106,7 @@ public class CustomerController {
     @DeleteMapping(
             path = "/{id}"
     )
-    public ResponseEntity<Object> delete(@PathVariable String id){
+    public ResponseEntity<Object> delete(@PathVariable String id) {
         try {
             customerService.delete(id);
             return ResponseHandler.generateResponse(
@@ -114,6 +115,55 @@ public class CustomerController {
                     "ok"
             );
         } catch (Exception e) {
+            return ResponseHandler.generateResponse(
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    null
+            );
+        }
+    }
+
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            params = {"page", "size", "sort"}
+    )
+    public ResponseEntity<Object> getAllWithPagination(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sort
+    ) {
+        try {
+            Page<Customer> customerPage = customerService.getAllWithPagination(page, size, sort);
+            return ResponseHandler.generateResponse(
+                    "SUCCESS",
+                    HttpStatus.OK,
+                    customerPage
+            );
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    null
+            );
+        }
+    }
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            params = {"page", "size"}
+    )
+    public ResponseEntity<Object> getAllWithPagination(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size
+    ){
+        try{
+            Page<Customer> customerPage = customerService.getAllWithPagination(page,size,null);
+
+            return ResponseHandler.generateResponse(
+                    "SUCCESS",
+                    HttpStatus.OK,
+                    customerPage
+            );
+        }catch (Exception e) {
             return ResponseHandler.generateResponse(
                     e.getMessage(),
                     HttpStatus.BAD_REQUEST,

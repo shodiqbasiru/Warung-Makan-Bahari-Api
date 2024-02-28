@@ -6,6 +6,10 @@ import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +50,22 @@ public class CustomerServiceImpl implements CustomerService {
     public void delete(String id) {
         Customer currentCustomer = findBydIdThrowNotFound(id);
         customerRepository.delete(currentCustomer);
+    }
+
+    @Override
+    public Page<Customer> getAllWithPagination(Integer pageNumber, Integer pageSize, String sort) {
+        Pageable pageable;
+        if (sort!=null){
+            pageable = PageRequest.of(pageNumber,pageSize, Sort.Direction.ASC,sort);
+        } else {
+            pageable = PageRequest.of(pageNumber,pageSize);
+        }
+        return customerRepository.findAll(pageable)
+                .map(customer -> Customer.builder()
+                        .id(customer.getId())
+                        .customerName(customer.getCustomerName())
+                        .phoneNumber(customer.getPhoneNumber())
+                        .build());
     }
 
     private Customer findBydIdThrowNotFound(String id) {
