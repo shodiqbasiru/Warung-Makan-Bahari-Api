@@ -6,6 +6,7 @@ import com.enigma.wmb_api.dto.response.ResponseHandler;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.service.MenuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -114,6 +115,55 @@ public class MenuController {
                     "ok"
             );
         } catch (Exception e) {
+            return ResponseHandler.generateResponse(
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    null
+            );
+        }
+    }
+
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            params = {"page", "size", "sort"}
+    )
+    public ResponseEntity<Object> getAllWithPagination(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sort
+    ) {
+        try {
+            Page<Menu> menuPage = menuService.getAllWithPagination(page, size, sort);
+            return ResponseHandler.generateResponse(
+                    "SUCCESS",
+                    HttpStatus.OK,
+                    menuPage
+            );
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    null
+            );
+        }
+    }
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            params = {"page", "size"}
+    )
+    public ResponseEntity<Object> getAllWithPagination(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size
+    ){
+        try{
+            Page<Menu> menuPage = menuService.getAllWithPagination(page,size,null);
+
+            return ResponseHandler.generateResponse(
+                    "SUCCESS",
+                    HttpStatus.OK,
+                    menuPage
+            );
+        }catch (Exception e) {
             return ResponseHandler.generateResponse(
                     e.getMessage(),
                     HttpStatus.BAD_REQUEST,

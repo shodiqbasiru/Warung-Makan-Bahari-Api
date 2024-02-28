@@ -6,6 +6,10 @@ import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.MenuRepository;
 import com.enigma.wmb_api.service.MenuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,6 +49,17 @@ public class MenuServiceImpl implements MenuService {
     public void delete(String id) {
         Menu currentMenu = findBydIdThrowNotFound(id);
         menuRepository.delete(currentMenu);
+    }
+
+    @Override
+    public Page<Menu> getAllWithPagination(Integer pageNumber, Integer pageSize, String sort) {
+        Pageable pageable;
+        if (sort != null) {
+            pageable = PageRequest.of(pageNumber,pageSize, Sort.Direction.DESC,sort);
+        } else {
+            pageable = PageRequest.of(pageNumber,pageSize);
+        }
+        return menuRepository.findAll(pageable);
     }
 
     private Menu findBydIdThrowNotFound(String id) {
