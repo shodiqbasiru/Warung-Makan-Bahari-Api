@@ -25,7 +25,7 @@ public class BillDetail {
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
     @Column(name = "qty", nullable = false)
-    private Integer qty;
+    private Float qty;
     @Column(name = "price", nullable = false)
     private Float price;
 }
