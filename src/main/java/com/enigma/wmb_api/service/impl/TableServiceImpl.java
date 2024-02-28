@@ -40,11 +40,11 @@ public class TableServiceImpl implements TableService {
 
     @Override
     public void delete(String id) {
-        MTable currentMenu = findBydIdThrowNotFound(id);
-        tableRepository.delete(currentMenu);
+        MTable currentTable = findBydIdThrowNotFound(id);
+        tableRepository.delete(currentTable);
     }
 
     private MTable findBydIdThrowNotFound(String id) {
-        return tableRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu Not Found"));
+        return tableRepository.findById(id).orElseThrow(() -> new RuntimeException("Table Not Found"));
     }
 }

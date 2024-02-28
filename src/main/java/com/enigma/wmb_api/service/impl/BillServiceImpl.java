@@ -22,6 +22,7 @@ public class BillServiceImpl implements BillService {
     private final TableService tableService;
     private final TransTypeService typeService;
     private final MenuService menuService;
+
     @Transactional
     @Override
     public BillResponse create(BillRequest request) {
@@ -52,16 +53,17 @@ public class BillServiceImpl implements BillService {
                 }).toList();
         billDetailService.createBulk(billDetails);
         bill.setBillDetails(billDetails);
-        return getBillResponse(billDetails,bill);
+        return getBillResponse(billDetails, bill);
     }
 
     @Override
     public List<BillResponse> getAll() {
         List<Bill> bills = billRepository.findAll();
-        return bills.stream().map(bill -> getBillResponse(bill.getBillDetails(),bill)).toList();
+        return bills.stream().map(bill -> getBillResponse(bill.getBillDetails(), bill)).toList();
     }
 
     private static BillResponse getBillResponse(List<BillDetail> billDetails, Bill bill) {
+
         List<BillDetailResponse> billDetailResponses = billDetails.stream()
                 .map(detail -> BillDetailResponse.builder()
                         .id(detail.getId())
@@ -71,11 +73,13 @@ public class BillServiceImpl implements BillService {
                         .build())
                 .toList();
 
+        String tableId = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
+
         return BillResponse.builder()
                 .id(bill.getId())
                 .date(bill.getDate())
                 .customerId(bill.getCustomer().getId())
-                .tableName(bill.getMTable().getTableName())
+                .tableId(tableId)
                 .transType(bill.getTransType().getId())
                 .billDetailResponses(billDetailResponses)
                 .build();

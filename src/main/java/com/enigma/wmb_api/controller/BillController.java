@@ -44,19 +44,14 @@ public class BillController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> getAllBills(){
-        try{
+
             List<BillResponse> result = billService.getAll();
             return ResponseHandler.generateResponse(
                     "Success",
                     HttpStatus.CREATED,
                     result
             );
-        }catch (Exception e){
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+
     }
 }
+

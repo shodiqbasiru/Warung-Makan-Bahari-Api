@@ -3,6 +3,7 @@ package com.enigma.wmb_api.service.impl;
 import com.enigma.wmb_api.dto.request.MenuRequest;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.entity.Menu;
+import com.enigma.wmb_api.exception.ApiException;
 import com.enigma.wmb_api.repository.MenuRepository;
 import com.enigma.wmb_api.service.MenuService;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,6 @@ public class MenuServiceImpl implements MenuService {
     }
 
     private Menu findBydIdThrowNotFound(String id) {
-        return menuRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu Not Found"));
+        return menuRepository.findById(id).orElseThrow(() -> new ApiException("Menu Not Found"));
     }
 }
