@@ -2,11 +2,10 @@ package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.CustomerRequest;
-import com.enigma.wmb_api.dto.response.ResponseHandler;
+import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.service.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,151 +23,71 @@ public class CustomerController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> create(@RequestBody CustomerRequest request) {
-        try {
-            Customer result = customerService.create(request);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.CREATED,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<Customer>> create(@RequestBody CustomerRequest request) {
+
+        Customer result = customerService.create(request);
+        CommonResponse<Customer> response = CommonResponse.<Customer>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Created a new customer successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> getAll() {
-        try {
-            List<Customer> result = customerService.getAll();
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<List<Customer>>> getAll() {
+        List<Customer> result = customerService.getAll();
+        CommonResponse<List<Customer>> responses = CommonResponse.<List<Customer>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Get all data successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(responses,HttpStatus.OK);
     }
 
     @GetMapping(
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> findById(@PathVariable String id) {
-        try {
-            Customer result = customerService.getById(id);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<Customer>> findById(@PathVariable String id) {
+
+        Customer result = customerService.getById(id);
+        CommonResponse<Customer> response = CommonResponse.<Customer>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Get data successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> update(@RequestBody Customer request) {
-        try {
-            Customer result = customerService.update(request);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<Customer>> update(@RequestBody Customer request) {
+
+        Customer result = customerService.update(request);
+
+        CommonResponse<Customer> response = CommonResponse.<Customer>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Updated data successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @DeleteMapping(
             path = "/{id}"
     )
-    public ResponseEntity<Object> delete(@PathVariable String id) {
-        try {
-            customerService.delete(id);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    "ok"
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<Customer>> delete(@PathVariable String id) {
+        customerService.delete(id);
+        CommonResponse<Customer> response = CommonResponse.<Customer>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Deleted data successfully")
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            params = {"page", "size", "sort"}
-    )
-    public ResponseEntity<Object> getAllWithPagination(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
-            @RequestParam(required = false) String sort
-    ) {
-        try {
-            Page<Customer> customerPage = customerService.getAllWithPagination(page, size, sort);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    customerPage
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
-    }
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            params = {"page", "size"}
-    )
-    public ResponseEntity<Object> getAllWithPagination(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size
-    ){
-        try{
-            Page<Customer> customerPage = customerService.getAllWithPagination(page,size,null);
-
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    customerPage
-            );
-        }catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
-    }
 }

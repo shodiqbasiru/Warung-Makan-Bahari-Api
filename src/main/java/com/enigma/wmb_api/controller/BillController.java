@@ -3,7 +3,7 @@ package com.enigma.wmb_api.controller;
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.BillRequest;
 import com.enigma.wmb_api.dto.response.BillResponse;
-import com.enigma.wmb_api.dto.response.ResponseHandler;
+import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.service.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,40 +23,26 @@ public class BillController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> create(@RequestBody BillRequest request) {
-        try{
-            BillResponse result = billService.create(request);
-            return ResponseHandler.generateResponse(
-                    "Success",
-                    HttpStatus.CREATED,
-                    result
-            );
-        }catch (Exception e){
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<BillResponse>> create(@RequestBody BillRequest request) {
+        BillResponse result = billService.create(request);
+        CommonResponse<BillResponse> response = CommonResponse.<BillResponse>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Created a new transaction successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> getAllBills(){
-        try{
-            List<BillResponse> result = billService.getAll();
-            return ResponseHandler.generateResponse(
-                    "Success",
-                    HttpStatus.CREATED,
-                    result
-            );
-        }catch (Exception e){
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<List<BillResponse>>> getAllBills() {
+        List<BillResponse> result = billService.getAll();
+        CommonResponse<List<BillResponse>> responses = CommonResponse.<List<BillResponse>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Get all transaction successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(responses,HttpStatus.OK);
     }
 }

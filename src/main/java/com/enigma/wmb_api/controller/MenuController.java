@@ -2,11 +2,10 @@ package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.MenuRequest;
-import com.enigma.wmb_api.dto.response.ResponseHandler;
+import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.service.MenuService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,157 +17,74 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = RouteApi.MENU_PATH)
 public class MenuController {
+
     private final MenuService menuService;
 
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> create(@RequestBody MenuRequest request) {
-        try {
-            Menu result = menuService.create(request);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.CREATED,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<Menu>> create(@RequestBody MenuRequest request) {
+        Menu result = menuService.create(request);
+        CommonResponse<Menu> response = CommonResponse.<Menu>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Created a new menu successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> getAll() {
-        try {
-            List<Menu> result = menuService.getAll();
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<List<Menu>>> getAll() {
+        List<Menu> result = menuService.getAll();
+        CommonResponse<List<Menu>> responses = CommonResponse.<List<Menu>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Get all menu successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping(
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> findById(@PathVariable String id){
-        try {
-            Menu result = menuService.getById(id);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<Menu>> findById(@PathVariable String id) {
+        Menu result = menuService.getById(id);
+        CommonResponse<Menu> response = CommonResponse.<Menu>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Get menu successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> update(@RequestBody Menu request){
-        try {
-            Menu result = menuService.update(request);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<Menu>> update(@RequestBody Menu request) {
+        Menu result = menuService.update(request);
+        CommonResponse<Menu> response = CommonResponse.<Menu>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Updated menu successfully")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping(
             path = "/{id}"
     )
-    public ResponseEntity<Object> delete(@PathVariable String id){
-        try {
-            menuService.delete(id);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    "ok"
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+    public ResponseEntity<CommonResponse<Menu>> delete(@PathVariable String id) {
+        menuService.delete(id);
+        CommonResponse<Menu> response = CommonResponse.<Menu>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Deleted menu successfully")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            params = {"page", "size", "sort"}
-    )
-    public ResponseEntity<Object> getAllWithPagination(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
-            @RequestParam(required = false) String sort
-    ) {
-        try {
-            Page<Menu> menuPage = menuService.getAllWithPagination(page, size, sort);
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    menuPage
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
-    }
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            params = {"page", "size"}
-    )
-    public ResponseEntity<Object> getAllWithPagination(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size
-    ){
-        try{
-            Page<Menu> menuPage = menuService.getAllWithPagination(page,size,null);
-
-            return ResponseHandler.generateResponse(
-                    "SUCCESS",
-                    HttpStatus.OK,
-                    menuPage
-            );
-        }catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
-    }
 }

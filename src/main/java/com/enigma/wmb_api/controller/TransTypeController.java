@@ -1,6 +1,7 @@
 package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.RouteApi;
+import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.ResponseHandler;
 import com.enigma.wmb_api.entity.TransType;
 import com.enigma.wmb_api.service.TransTypeService;
@@ -21,63 +22,42 @@ public class TransTypeController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> getAll() {
-        try {
+    public ResponseEntity<CommonResponse<List<TransType>>> getAll() {
             List<TransType> result = typeService.getAll();
-            return ResponseHandler.generateResponse(
-                    "Success",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+            CommonResponse<List<TransType>> response = CommonResponse.<List<TransType>>builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .message("Get all data successfully")
+                    .data(result)
+                    .build();
+            return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @GetMapping(
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> findById(@PathVariable String id){
-        try {
+    public ResponseEntity<CommonResponse<TransType>> findById(@PathVariable String id){
             TransType result = typeService.getById(id);
-            return ResponseHandler.generateResponse(
-                    "Success",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+            CommonResponse<TransType> response = CommonResponse.<TransType>builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .message("Get data successfully")
+                    .data(result)
+                    .build();
+            return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> update(@RequestBody TransType transType){
-        try {
+    public ResponseEntity<CommonResponse<TransType>> update(@RequestBody TransType transType){
             TransType result = typeService.update(transType);
-            return ResponseHandler.generateResponse(
-                    "Success",
-                    HttpStatus.OK,
-                    result
-            );
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(
-                    e.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    null
-            );
-        }
+            CommonResponse<TransType> response = CommonResponse.<TransType>builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .message("Updates data successfully")
+                    .data(result)
+                    .build();
+            return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
 }
