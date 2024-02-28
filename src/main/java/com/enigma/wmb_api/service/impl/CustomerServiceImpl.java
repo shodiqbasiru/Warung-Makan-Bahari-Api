@@ -60,12 +60,7 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             pageable = PageRequest.of(pageNumber,pageSize);
         }
-        return customerRepository.findAll(pageable)
-                .map(customer -> Customer.builder()
-                        .id(customer.getId())
-                        .customerName(customer.getCustomerName())
-                        .phoneNumber(customer.getPhoneNumber())
-                        .build());
+        return customerRepository.findAll(pageable);
     }
 
     private Customer findBydIdThrowNotFound(String id) {
