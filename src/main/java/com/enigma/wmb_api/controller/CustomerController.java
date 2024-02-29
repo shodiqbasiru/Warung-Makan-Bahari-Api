@@ -2,7 +2,7 @@ package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.CustomerRequest;
-import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
+import com.enigma.wmb_api.dto.request.PaginationRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PaginationResponse;
 import com.enigma.wmb_api.entity.Customer;
@@ -45,9 +45,9 @@ public class CustomerController {
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", defaultValue = "customerName") String sortBy,
             @RequestParam(name = "direction", defaultValue = "asc") String direction,
-            @RequestParam(name = "name", required = false) String name
+            @RequestParam(name = "customerName", required = false) String name
     ) {
-        PaginationCustomerRequest pageRequest = PaginationCustomerRequest.builder()
+        PaginationRequest pageRequest = PaginationRequest.builder()
                 .page(page)
                 .size(size)
                 .sortBy(sortBy)

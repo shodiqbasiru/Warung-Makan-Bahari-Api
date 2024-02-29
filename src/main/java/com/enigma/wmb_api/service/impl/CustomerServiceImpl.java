@@ -1,7 +1,7 @@
 package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.CustomerRequest;
-import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
+import com.enigma.wmb_api.dto.request.PaginationRequest;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;
@@ -12,8 +12,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Page<Customer> getAll(PaginationCustomerRequest request) {
+    public Page<Customer> getAll(PaginationRequest request) {
         if (request.getPage() < 0) request.setPage(1);
 
         Sort sort = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
@@ -59,18 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.delete(currentCustomer);
     }
 
-    @Override
-    public Page<Customer> getAllWithPagination(Integer pageNumber, Integer pageSize, String sort) {
-        Pageable pageable;
-        if (sort != null) {
-            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, sort);
-        } else {
-            pageable = PageRequest.of(pageNumber, pageSize);
-        }
-        return customerRepository.findAll(pageable);
-    }
-
     private Customer findBydIdThrowNotFound(String id) {
-        return customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer Not Found"));
+        return customerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found"));
     }
 }

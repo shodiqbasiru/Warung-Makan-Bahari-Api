@@ -2,10 +2,13 @@ package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.MenuRequest;
+import com.enigma.wmb_api.dto.request.PaginationRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
+import com.enigma.wmb_api.dto.response.PaginationResponse;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.service.MenuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +40,37 @@ public class MenuController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<List<Menu>>> getAll() {
-        List<Menu> result = menuService.getAll();
+    public ResponseEntity<CommonResponse<List<Menu>>> getAll(
+            @RequestParam(name = "page", defaultValue = "1") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size,
+            @RequestParam(name = "sortBy", defaultValue = "customerName") String sortBy,
+            @RequestParam(name = "direction", defaultValue = "asc") String direction,
+            @RequestParam(name = "customerName", required = false) String name
+    ) {
+        PaginationRequest pageRequest = PaginationRequest.builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .direction(direction)
+                .name(name)
+                .build();
+
+        Page<Menu> result = menuService.getAll(pageRequest);
+
+        PaginationResponse paginationResponse = PaginationResponse.builder()
+                .totalPages(result.getTotalPages())
+                .totalElements(result.getTotalElements())
+                .page(result.getPageable().getPageNumber()+1)
+                .size(result.getPageable().getPageSize())
+                .hasNext(result.hasNext())
+                .hasPrevious(result.hasPrevious())
+                .build();
+
         CommonResponse<List<Menu>> responses = CommonResponse.<List<Menu>>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Get all menu successfully")
-                .data(result)
+                .data(result.getContent())
+                .pages(paginationResponse)
                 .build();
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
