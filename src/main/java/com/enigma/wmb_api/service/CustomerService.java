@@ -1,14 +1,14 @@
 package com.enigma.wmb_api.service;
 
 import com.enigma.wmb_api.dto.request.CustomerRequest;
-import com.enigma.wmb_api.dto.request.PaginationRequest;
+import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
 import com.enigma.wmb_api.entity.Customer;
 import org.springframework.data.domain.Page;
 
 public interface CustomerService {
     Customer create(CustomerRequest request);
     Customer getById(String id);
-    Page<Customer> getAll(PaginationRequest request);
+    Page<Customer> getAll(PaginationCustomerRequest request);
     Customer update(Customer request);
     void delete(String id);
 }

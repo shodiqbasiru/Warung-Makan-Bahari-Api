@@ -1,7 +1,7 @@
 package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.CustomerRequest;
-import com.enigma.wmb_api.dto.request.PaginationRequest;
+import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;
@@ -38,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Page<Customer> getAll(PaginationRequest request) {
+    public Page<Customer> getAll(PaginationCustomerRequest request) {
         if (request.getPage() < 0) request.setPage(1);
 
         Sort sort = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
