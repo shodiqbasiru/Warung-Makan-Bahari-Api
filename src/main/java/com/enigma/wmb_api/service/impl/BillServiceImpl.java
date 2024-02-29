@@ -1,12 +1,14 @@
 package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.BillRequest;
+import com.enigma.wmb_api.dto.request.PaginationBillRequest;
 import com.enigma.wmb_api.dto.response.BillDetailResponse;
 import com.enigma.wmb_api.dto.response.BillResponse;
 import com.enigma.wmb_api.entity.*;
 import com.enigma.wmb_api.repository.BillRepository;
 import com.enigma.wmb_api.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,16 +55,6 @@ public class BillServiceImpl implements BillService {
                 }).toList();
         billDetailService.createBulk(billDetails);
         bill.setBillDetails(billDetails);
-        return getBillResponse(billDetails, bill);
-    }
-
-    @Override
-    public List<BillResponse> getAll() {
-        List<Bill> bills = billRepository.findAll();
-        return bills.stream().map(bill -> getBillResponse(bill.getBillDetails(), bill)).toList();
-    }
-
-    private static BillResponse getBillResponse(List<BillDetail> billDetails, Bill bill) {
 
         List<BillDetailResponse> billDetailResponses = billDetails.stream()
                 .map(detail -> BillDetailResponse.builder()
@@ -73,15 +65,75 @@ public class BillServiceImpl implements BillService {
                         .build())
                 .toList();
 
-        String tableId = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
+        String idTable = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
 
         return BillResponse.builder()
                 .id(bill.getId())
                 .date(bill.getDate())
                 .customerId(bill.getCustomer().getId())
-                .tableId(tableId)
+                .tableId(idTable)
                 .transType(bill.getTransType().getId())
                 .billDetailResponses(billDetailResponses)
                 .build();
     }
+
+    @Override
+    public Page<BillResponse> getAll(PaginationBillRequest request) {
+        if (request.getPage() < 0) request.setPage(1);
+
+        Sort sort = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
+        Pageable pageable = PageRequest.of((request.getPage() - 1), request.getSize(), sort);
+
+        Page<Bill> billPage = billRepository.findAll(pageable);
+        List<BillResponse> billResponses = billPage.getContent().stream()
+                .map(bill -> {
+                    List<BillDetailResponse> billDetailResponses = bill.getBillDetails().stream()
+                            .map(detail -> BillDetailResponse.builder()
+                                    .id(detail.getId())
+                                    .menuId(detail.getMenu().getId())
+                                    .qty(detail.getQty())
+                                    .price(detail.getPrice())
+                                    .build())
+                            .toList();
+
+                    String idTable = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
+
+
+                    return BillResponse.builder()
+                            .id(bill.getId())
+                            .date(bill.getDate())
+                            .customerId(bill.getCustomer().getId())
+                            .tableId(idTable)
+                            .transType(bill.getTransType().getId())
+                            .billDetailResponses(billDetailResponses)
+                            .build();
+                })
+                .toList();
+        return new PageImpl<>(billResponses,pageable,billPage.getTotalElements());
+
+    }
+
+
+//    private static BillResponse getBillResponse(List<BillDetail> billDetails, Bill bill) {
+//
+//        List<BillDetailResponse> billDetailResponses = billDetails.stream()
+//                .map(detail -> BillDetailResponse.builder()
+//                        .id(detail.getId())
+//                        .menuId(detail.getMenu().getId())
+//                        .qty(detail.getQty())
+//                        .price(detail.getPrice())
+//                        .build())
+//                .toList();
+//
+//        String tableId = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
+//
+//        return BillResponse.builder()
+//                .id(bill.getId())
+//                .date(bill.getDate())
+//                .customerId(bill.getCustomer().getId())
+//                .tableId(tableId)
+//                .transType(bill.getTransType().getId())
+//                .billDetailResponses(billDetailResponses)
+//                .build();
+//    }
 }

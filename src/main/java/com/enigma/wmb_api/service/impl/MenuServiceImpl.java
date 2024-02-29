@@ -34,7 +34,8 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Menu getById(String id) {
-        return findBydIdThrowNotFound(id);    }
+        return findBydIdThrowNotFound(id);
+    }
 
     @Override
     public Page<Menu> getAll(PaginationMenuRequest request) {
@@ -44,7 +45,7 @@ public class MenuServiceImpl implements MenuService {
         Pageable pageable = PageRequest.of((request.getPage() - 1), request.getSize(), sort);
         Specification<Menu> specification = MenuSpecifcation.getSpecification(request);
 
-        return menuRepository.findAll(specification,pageable);
+        return menuRepository.findAll(specification, pageable);
     }
 
     @Override
@@ -61,8 +62,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
 
-
     private Menu findBydIdThrowNotFound(String id) {
-        return menuRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Menu Not Found"));
+        return menuRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
     }
 }
