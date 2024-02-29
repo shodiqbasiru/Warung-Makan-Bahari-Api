@@ -2,7 +2,6 @@ package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.response.CommonResponse;
-import com.enigma.wmb_api.dto.response.ResponseHandler;
 import com.enigma.wmb_api.entity.TransType;
 import com.enigma.wmb_api.service.TransTypeService;
 import lombok.RequiredArgsConstructor;
