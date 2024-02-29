@@ -7,6 +7,7 @@ import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.MenuRepository;
 import com.enigma.wmb_api.service.MenuService;
 import com.enigma.wmb_api.specification.MenuSpecifcation;
+import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +23,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class MenuServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
+    private final ValidationUtil validation;
 
     @Override
     public Menu create(MenuRequest request) {
+        validation.validate(request);
         Menu newMenu = Menu.builder()
                 .menuName(request.getMenuName())
                 .price(request.getPrice())
@@ -50,8 +53,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Menu update(Menu request) {
-
         findBydIdThrowNotFound(request.getId());
+        validation.validate(request);
+
         return menuRepository.saveAndFlush(request);
     }
 
