@@ -1,7 +1,6 @@
 package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.MenuRequest;
-import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
 import com.enigma.wmb_api.dto.request.PaginationMenuRequest;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.MenuRepository;
