@@ -87,7 +87,7 @@ public class BillServiceImpl implements BillService {
                 .date(bill.getDate())
                 .customerId(bill.getCustomer().getId())
                 .tableId(idTable)
-                .transType(bill.getTransType().getId())
+                .transType(bill.getTransType().getId().toString())
                 .billDetailResponses(billDetailResponses)
                 .build();
     }
@@ -117,7 +117,7 @@ public class BillServiceImpl implements BillService {
                             .date(bill.getDate())
                             .customerId(bill.getCustomer().getId())
                             .tableId(idTable)
-                            .transType(bill.getTransType().getId())
+                            .transType(bill.getTransType().getId().toString())
                             .billDetailResponses(billDetailResponses)
                             .build();
                 })
