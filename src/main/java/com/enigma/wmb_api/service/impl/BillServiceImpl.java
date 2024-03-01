@@ -7,6 +7,7 @@ import com.enigma.wmb_api.dto.response.BillResponse;
 import com.enigma.wmb_api.entity.*;
 import com.enigma.wmb_api.repository.BillRepository;
 import com.enigma.wmb_api.service.*;
+import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,29 @@ public class BillServiceImpl implements BillService {
     private final TableService tableService;
     private final TransTypeService typeService;
     private final MenuService menuService;
+    private final ValidationUtil validation;
 
     @Transactional
     @Override
     public BillResponse create(BillRequest request) {
         Customer customerId = customerService.getById(request.getCustomerId());
-        MTable tableId = tableService.getById(request.getTableId());
-        TransType transTypeId = typeService.getById(request.getTransTypeId());
 
+        MTable tableId;
+        if (request.getTableId().isEmpty()) {
+            tableId = null;
+        } else {
+            tableId = tableService.getById(request.getTableId());
+        }
+
+        List<TransType> transTypes = typeService.getAll();
+        TransType transTypeId;
+        if (tableId != null){
+            transTypeId = transTypes.get(0);
+        } else {
+            transTypeId = transTypes.get(1);
+        }
+
+        validation.validate(request);
 
         Bill bill = Bill.builder()
                 .date(new Date())
@@ -42,10 +58,9 @@ public class BillServiceImpl implements BillService {
         billRepository.saveAndFlush(bill);
 
         List<BillDetail> billDetails = request.getBillDetailRequests().stream()
-
                 .map(detailRequest -> {
                     Menu menuId = menuService.getById(detailRequest.getMenuId());
-
+                    validation.validate(detailRequest);
                     return BillDetail.builder()
                             .bill(bill)
                             .menu(menuId)
@@ -85,7 +100,6 @@ public class BillServiceImpl implements BillService {
         Pageable pageable = PageRequest.of((request.getPage() - 1), request.getSize(), sort);
 
         Page<Bill> billPage = billRepository.findAll(pageable);
-
         List<BillResponse> billResponses = billPage.getContent().stream()
                 .map(bill -> {
                     List<BillDetailResponse> billDetailResponses = bill.getBillDetails().stream()
