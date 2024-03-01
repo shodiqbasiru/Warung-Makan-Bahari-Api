@@ -6,4 +6,5 @@ public class RouteApi {
     public static final String TABLE_PATH = "/api/tables";
     public static final String TRANS_TYPE_PATH = "/api/trans-types";
     public static final String BILL_PATH = "/api/bills";
+    public static final String AUTH_API = "/api/auth";
 }
