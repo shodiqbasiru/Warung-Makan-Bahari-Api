@@ -6,7 +6,10 @@ import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.TableRepository;
 import com.enigma.wmb_api.service.TableService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TableServiceImpl implements TableService {
     private final TableRepository tableRepository;
+
     @Override
     public MTable create(TableRequest request) {
         MTable newTable = MTable.builder()
@@ -45,6 +49,6 @@ public class TableServiceImpl implements TableService {
     }
 
     private MTable findBydIdThrowNotFound(String id) {
-        return tableRepository.findById(id).orElseThrow(() -> new RuntimeException("Table Not Found"));
+        return tableRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Table Not Found"));
     }
 }
