@@ -1,4 +1,8 @@
 package com.enigma.wmb_api.service;
 
-public class RoleService {
+import com.enigma.wmb_api.constant.UserRole;
+import com.enigma.wmb_api.entity.Role;
+
+public interface RoleService {
+    Role getOrSave(UserRole role);
 }
