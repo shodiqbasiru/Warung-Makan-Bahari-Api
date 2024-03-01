@@ -28,7 +28,7 @@ public class TransTypeServiceImpl implements TransTypeService {
 
     @Override
     public TransType update(TransType transType) {
-        getById(transType.getId());
+        getById(transType.getId().toString());
         return typeRepository.save(transType);
     }
 }
