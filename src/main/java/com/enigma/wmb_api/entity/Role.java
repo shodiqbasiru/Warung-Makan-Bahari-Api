@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "m_role")
-public class role {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
