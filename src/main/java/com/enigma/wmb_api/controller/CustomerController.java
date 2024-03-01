@@ -22,20 +22,6 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
 
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<CommonResponse<Customer>> create(@RequestBody CustomerRequest request) {
-
-        Customer result = customerService.create(request);
-        CommonResponse<Customer> response = CommonResponse.<Customer>builder()
-                .statusCode(HttpStatus.CREATED.value())
-                .message("Created a new customer successfully")
-                .data(result)
-                .build();
-        return new ResponseEntity<>(response,HttpStatus.CREATED);
-    }
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
