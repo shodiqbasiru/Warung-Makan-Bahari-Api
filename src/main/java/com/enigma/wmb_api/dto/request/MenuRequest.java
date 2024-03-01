@@ -17,5 +17,5 @@ public class MenuRequest {
     private String menuName;
     @NotNull(message = "price is required")
     @Min(value = 0)
-    private Float price;
+    private Integer price;
 }

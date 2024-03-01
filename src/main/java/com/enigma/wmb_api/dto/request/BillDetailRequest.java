@@ -16,5 +16,5 @@ public class BillDetailRequest {
 
     @NotNull
     @Min(value = 1)
-    private Float qty;
+    private Integer qty;
 }
