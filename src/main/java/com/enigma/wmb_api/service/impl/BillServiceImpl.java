@@ -85,6 +85,7 @@ public class BillServiceImpl implements BillService {
         Pageable pageable = PageRequest.of((request.getPage() - 1), request.getSize(), sort);
 
         Page<Bill> billPage = billRepository.findAll(pageable);
+
         List<BillResponse> billResponses = billPage.getContent().stream()
                 .map(bill -> {
                     List<BillDetailResponse> billDetailResponses = bill.getBillDetails().stream()
@@ -97,8 +98,6 @@ public class BillServiceImpl implements BillService {
                             .toList();
 
                     String idTable = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
-
-
                     return BillResponse.builder()
                             .id(bill.getId())
                             .date(bill.getDate())
@@ -113,27 +112,4 @@ public class BillServiceImpl implements BillService {
 
     }
 
-
-//    private static BillResponse getBillResponse(List<BillDetail> billDetails, Bill bill) {
-//
-//        List<BillDetailResponse> billDetailResponses = billDetails.stream()
-//                .map(detail -> BillDetailResponse.builder()
-//                        .id(detail.getId())
-//                        .menuId(detail.getMenu().getId())
-//                        .qty(detail.getQty())
-//                        .price(detail.getPrice())
-//                        .build())
-//                .toList();
-//
-//        String tableId = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
-//
-//        return BillResponse.builder()
-//                .id(bill.getId())
-//                .date(bill.getDate())
-//                .customerId(bill.getCustomer().getId())
-//                .tableId(tableId)
-//                .transType(bill.getTransType().getId())
-//                .billDetailResponses(billDetailResponses)
-//                .build();
-//    }
 }
