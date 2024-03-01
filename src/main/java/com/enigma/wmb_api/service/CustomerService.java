@@ -9,6 +9,6 @@ public interface CustomerService {
     Customer create(CustomerRequest request);
     Customer getById(String id);
     Page<Customer> getAll(PaginationCustomerRequest request);
-    Customer update(Customer request);
+    Customer update(CustomerRequest request, String id);
     void delete(String id);
 }

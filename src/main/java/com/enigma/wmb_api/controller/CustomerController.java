@@ -90,12 +90,13 @@ public class CustomerController {
     }
 
     @PutMapping(
+            path = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Customer>> update(@RequestBody Customer request) {
+    public ResponseEntity<CommonResponse<Customer>> update(@RequestBody CustomerRequest request, @PathVariable String id) {
 
-        Customer result = customerService.update(request);
+        Customer result = customerService.update(request,id);
 
         CommonResponse<Customer> response = CommonResponse.<Customer>builder()
                 .statusCode(HttpStatus.OK.value())

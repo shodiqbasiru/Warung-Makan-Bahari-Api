@@ -6,6 +6,7 @@ import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;
 import com.enigma.wmb_api.specification.CustomerSpecification;
+import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,10 +22,13 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final ValidationUtil validation;
 
     @Transactional
     @Override
     public Customer create(CustomerRequest request) {
+        validation.validate(request);
+
         Customer newCustomer = Customer.builder()
                 .customerName(request.getCustomerName())
                 .phoneNumber(request.getPhoneNumber())
@@ -50,8 +54,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public Customer update(Customer customer) {
-        findBydIdThrowNotFound(customer.getId());
+    public Customer update(CustomerRequest request, String id) {
+        Customer customer = findBydIdThrowNotFound(id);
+        validation.validate(request);
+
+        customer.setCustomerName(request.getCustomerName());
+        customer.setPhoneNumber(request.getPhoneNumber());
+
         return customerRepository.saveAndFlush(customer);
     }
 
