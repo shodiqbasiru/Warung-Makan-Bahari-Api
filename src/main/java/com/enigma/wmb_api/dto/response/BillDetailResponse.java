@@ -10,6 +10,6 @@ import lombok.*;
 public class BillDetailResponse {
     private String id;
     private String menuId;
-    private Float qty;
-    private Float price;
+    private Integer qty;
+    private Integer price;
 }
