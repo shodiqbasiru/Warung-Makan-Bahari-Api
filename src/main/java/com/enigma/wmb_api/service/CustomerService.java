@@ -6,7 +6,7 @@ import com.enigma.wmb_api.entity.Customer;
 import org.springframework.data.domain.Page;
 
 public interface CustomerService {
-    Customer create(CustomerRequest request);
+    Customer create(Customer customer);
     Customer getById(String id);
     Page<Customer> getAll(PaginationCustomerRequest request);
     Customer update(CustomerRequest request, String id);

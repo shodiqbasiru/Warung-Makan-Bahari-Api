@@ -26,14 +26,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public Customer create(CustomerRequest request) {
-        validation.validate(request);
-
-        Customer newCustomer = Customer.builder()
-                .customerName(request.getCustomerName())
-                .phoneNumber(request.getPhoneNumber())
-                .build();
-        return customerRepository.saveAndFlush(newCustomer);
+    public Customer create(Customer customer) {
+        return customerRepository.saveAndFlush(customer);
     }
 
     @Override
