@@ -1,5 +1,6 @@
 package com.enigma.wmb_api.service.impl;
 
+import com.enigma.wmb_api.constant.TransTypeEnum;
 import com.enigma.wmb_api.entity.TransType;
 import com.enigma.wmb_api.repository.TransTypeRepository;
 import com.enigma.wmb_api.service.TransTypeService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,9 @@ public class TransTypeServiceImpl implements TransTypeService {
 
     @Override
     public TransType getById(String id) {
-        return typeRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trans Type NOt Found"));
+        TransTypeEnum typeEnum = TransTypeEnum.valueOf(id);
+        Optional<TransType> transTypeId = typeRepository.findById(typeEnum);
+        return transTypeId.orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND,"Trans type not found"));
     }
 
     @Override
