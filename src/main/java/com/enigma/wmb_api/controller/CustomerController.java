@@ -3,9 +3,12 @@ package com.enigma.wmb_api.controller;
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.CustomerRequest;
 import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
+import com.enigma.wmb_api.dto.response.AccountResponse;
 import com.enigma.wmb_api.dto.response.CommonResponse;
+import com.enigma.wmb_api.dto.response.CustomerResponse;
 import com.enigma.wmb_api.dto.response.PaginationResponse;
 import com.enigma.wmb_api.entity.Customer;
+import com.enigma.wmb_api.entity.UserAccount;
 import com.enigma.wmb_api.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +30,7 @@ public class CustomerController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<List<Customer>>> getAll(
+    public ResponseEntity<CommonResponse<List<CustomerResponse>>> getAll(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", defaultValue = "customerName") String sortBy,
@@ -42,6 +46,10 @@ public class CustomerController {
                 .build();
         Page<Customer> result = customerService.getAll(pageRequest);
 
+        List<CustomerResponse> customerResponses = result.getContent().stream()
+                .map(this::mapToCustomerResponse)
+                .collect(Collectors.toList());
+
         PaginationResponse paginationResponse = PaginationResponse.builder()
                 .totalPages(result.getTotalPages())
                 .totalElements(result.getTotalElements())
@@ -51,13 +59,13 @@ public class CustomerController {
                 .hasPrevious(result.hasPrevious())
                 .build();
 
-        CommonResponse<List<Customer>> responses = CommonResponse.<List<Customer>>builder()
+        CommonResponse<List<CustomerResponse>> responses = CommonResponse.<List<CustomerResponse>>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Get all data successfully")
-                .data(result.getContent())
+                .data(customerResponses)
                 .pages(paginationResponse)
                 .build();
-        return new ResponseEntity<>(responses,HttpStatus.OK);
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping(
@@ -102,6 +110,29 @@ public class CustomerController {
                 .message("Deleted data successfully")
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    private CustomerResponse mapToCustomerResponse(Customer customer) {
+        CustomerResponse.CustomerResponseBuilder builder = CustomerResponse.builder()
+                .id(customer.getId())
+                .customerName(customer.getCustomerName())
+                .phoneNumber(customer.getPhoneNumber());
+
+        if (customer.getUserAccount() != null) {
+            builder.accountResponse(mapToUserAccountResponse(customer.getUserAccount()));
+        }
+
+        return builder.build();
+    }
+
+    private AccountResponse mapToUserAccountResponse(UserAccount userAccount) {
+        if (userAccount != null) {
+            return AccountResponse.builder()
+                    .id(userAccount.getId())
+                    .email(userAccount.getEmail())
+                    .build();
+        }
+        return null;
     }
 
 }

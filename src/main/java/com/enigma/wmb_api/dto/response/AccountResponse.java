@@ -7,8 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResponse {
-    private String name;
+public class AccountResponse {
+    private String id;
     private String email;
     private String rolesId;
 }
