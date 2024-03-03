@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +27,7 @@ public class AuthController {
         RegisterResponse registerResponse = authService.register(request);
         CommonResponse<RegisterResponse> response = CommonResponse.<RegisterResponse>builder()
                 .statusCode(HttpStatus.CREATED.value())
-                .message("Created a new account successfully")
+                .message("Created a new account successfully, please verify your email")
                 .data(registerResponse)
                 .build();
         return new ResponseEntity<>(response,HttpStatus.CREATED);
@@ -49,5 +46,33 @@ public class AuthController {
                 .data(loginResponse)
                 .build();
         return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @GetMapping(
+            path = "/verify-account"
+    )
+    public ResponseEntity<CommonResponse<?>> verifyAccount(
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "otp") String otp
+    ){
+        String verifyAccount = authService.verifyAccount(email, otp);
+        CommonResponse<?> response = CommonResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(verifyAccount)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+    @GetMapping(
+            path = "/regenerate-otp"
+    )
+    public ResponseEntity<CommonResponse<?>> regenerateOtp(
+            @RequestParam(name = "email") String email
+    ){
+        String verifyAccount = authService.regenerateOtp(email);
+        CommonResponse<?> response = CommonResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(verifyAccount)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

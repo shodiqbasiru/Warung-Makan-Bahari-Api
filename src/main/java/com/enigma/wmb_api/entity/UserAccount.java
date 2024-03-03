@@ -6,10 +6,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -28,6 +30,15 @@ public class UserAccount implements UserDetails {
 
     @Column(name = "is_enable")
     private Boolean isEnable;
+
+    @Column(name = "otp")
+    private String otp;
+
+    @Column(name = "otp_generate_time")
+    private LocalDateTime otpGenerateTime;
+
+    @Column(name = "is_verified")
+    private Boolean isVerified;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
