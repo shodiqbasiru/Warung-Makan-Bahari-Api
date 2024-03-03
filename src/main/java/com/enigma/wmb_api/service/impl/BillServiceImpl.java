@@ -32,20 +32,10 @@ public class BillServiceImpl implements BillService {
     public BillResponse create(BillRequest request) {
         Customer customerId = customerService.getById(request.getCustomerId());
 
-        MTable tableId;
-        if (request.getTableId().isEmpty()) {
-            tableId = null;
-        } else {
-            tableId = tableService.getById(request.getTableId());
-        }
+        MTable tableId = request.getTableId().isEmpty() ? null : tableService.getById(request.getTableId());
 
         List<TransType> transTypes = typeService.getAll();
-        TransType transTypeId;
-        if (tableId != null){
-            transTypeId = transTypes.get(0);
-        } else {
-            transTypeId = transTypes.get(1);
-        }
+        TransType transTypeId = tableId != null ? transTypes.get(0) : transTypes.get(1);
 
         validation.validate(request);
 
