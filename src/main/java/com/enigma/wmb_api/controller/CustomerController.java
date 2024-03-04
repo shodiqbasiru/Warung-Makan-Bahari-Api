@@ -76,7 +76,6 @@ public class CustomerController {
 
         Customer result = customerService.getById(id);
 
-
         CustomerResponse customerResponse = CustomerResponse.builder()
                 .id(result.getId())
                 .customerName(result.getCustomerName())
@@ -97,15 +96,23 @@ public class CustomerController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Customer>> update(@RequestBody CustomerRequest request, @PathVariable String id) {
+    public ResponseEntity<CommonResponse<CustomerResponse>> update(@RequestBody CustomerRequest request, @PathVariable String id) {
 
         Customer result = customerService.update(request,id);
 
-        CommonResponse<Customer> response = CommonResponse.<Customer>builder()
+        CustomerResponse customerResponse = CustomerResponse.builder()
+                .id(result.getId())
+                .customerName(result.getCustomerName())
+                .phoneNumber(result.getPhoneNumber())
+                .accountDetails(mapToUserAccountResponse(result.getUserAccount()))
+                .build();
+
+        CommonResponse<CustomerResponse> response = CommonResponse.<CustomerResponse>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Updated data successfully")
-                .data(result)
+                .data(customerResponse)
                 .build();
+
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
