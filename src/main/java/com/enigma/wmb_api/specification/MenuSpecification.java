@@ -1,6 +1,5 @@
 package com.enigma.wmb_api.specification;
 
-import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
 import com.enigma.wmb_api.dto.request.PaginationMenuRequest;
 import com.enigma.wmb_api.entity.Menu;
 import jakarta.persistence.criteria.Predicate;
@@ -9,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuSpecifcation {
+public class MenuSpecification {
     public static Specification<Menu> getSpecification(PaginationMenuRequest request){
         return (root, query, criteriaBuilder) -> {
 

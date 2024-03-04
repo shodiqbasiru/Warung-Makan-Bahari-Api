@@ -44,7 +44,7 @@ public class MenuController {
     public ResponseEntity<CommonResponse<List<Menu>>> getAll(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size,
-            @RequestParam(name = "sortBy", defaultValue = "customerName") String sortBy,
+            @RequestParam(name = "sortBy", defaultValue = "menuName") String sortBy,
             @RequestParam(name = "direction", defaultValue = "asc") String direction,
             @RequestParam(name = "customerName", required = false) String name
     ) {
