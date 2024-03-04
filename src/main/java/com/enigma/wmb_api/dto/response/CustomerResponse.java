@@ -12,5 +12,5 @@ public class CustomerResponse {
     private String id;
     private String customerName;
     private String phoneNumber;
-    private AccountResponse accountResponse;
+    private AccountResponse accountDetails;
 }

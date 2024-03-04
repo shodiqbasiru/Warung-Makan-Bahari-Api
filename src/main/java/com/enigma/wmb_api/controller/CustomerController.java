@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 @RequestMapping(path = RouteApi.CUSTOMER_PATH)
 public class CustomerController {
     private final CustomerService customerService;
-
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -72,13 +72,22 @@ public class CustomerController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Customer>> findById(@PathVariable String id) {
+    public ResponseEntity<CommonResponse<CustomerResponse>> findById(@PathVariable String id) {
 
         Customer result = customerService.getById(id);
-        CommonResponse<Customer> response = CommonResponse.<Customer>builder()
+
+
+        CustomerResponse customerResponse = CustomerResponse.builder()
+                .id(result.getId())
+                .customerName(result.getCustomerName())
+                .phoneNumber(result.getPhoneNumber())
+                .accountDetails(mapToUserAccountResponse(result.getUserAccount()))
+                .build();
+
+        CommonResponse<CustomerResponse> response = CommonResponse.<CustomerResponse>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Get data successfully")
-                .data(result)
+                .data(customerResponse)
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
@@ -119,7 +128,7 @@ public class CustomerController {
                 .phoneNumber(customer.getPhoneNumber());
 
         if (customer.getUserAccount() != null) {
-            builder.accountResponse(mapToUserAccountResponse(customer.getUserAccount()));
+            builder.accountDetails(mapToUserAccountResponse(customer.getUserAccount()));
         }
 
         return builder.build();
@@ -127,9 +136,12 @@ public class CustomerController {
 
     private AccountResponse mapToUserAccountResponse(UserAccount userAccount) {
         if (userAccount != null) {
+            List<String> roles = userAccount.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority).toList();
             return AccountResponse.builder()
                     .id(userAccount.getId())
                     .email(userAccount.getEmail())
+                    .roles(roles)
                     .build();
         }
         return null;

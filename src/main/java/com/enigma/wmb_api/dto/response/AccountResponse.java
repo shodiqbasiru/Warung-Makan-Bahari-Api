@@ -2,6 +2,8 @@ package com.enigma.wmb_api.dto.response;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,5 +12,5 @@ import lombok.*;
 public class AccountResponse {
     private String id;
     private String email;
-    private String rolesId;
+    private List<String> roles;
 }
