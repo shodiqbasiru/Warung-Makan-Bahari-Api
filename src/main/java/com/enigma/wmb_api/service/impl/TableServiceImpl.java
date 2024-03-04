@@ -2,12 +2,11 @@ package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.TableRequest;
 import com.enigma.wmb_api.entity.MTable;
-import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.TableRepository;
 import com.enigma.wmb_api.service.TableService;
+import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,9 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TableServiceImpl implements TableService {
     private final TableRepository tableRepository;
+    private final ValidationUtil validation;
 
     @Override
     public MTable create(TableRequest request) {
+        validation.validate(request);
+
         MTable newTable = MTable.builder()
                 .tableName(request.getTableName())
                 .build();
@@ -38,6 +40,8 @@ public class TableServiceImpl implements TableService {
 
     @Override
     public MTable update(MTable request) {
+        validation.validate(request);
+
         findBydIdThrowNotFound(request.getId());
         return tableRepository.saveAndFlush(request);
     }
