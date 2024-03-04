@@ -2,7 +2,6 @@ package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.MenuRequest;
-import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
 import com.enigma.wmb_api.dto.request.PaginationMenuRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PaginationResponse;
