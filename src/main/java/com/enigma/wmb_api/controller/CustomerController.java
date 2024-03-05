@@ -1,7 +1,7 @@
 package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.RouteApi;
-import com.enigma.wmb_api.dto.request.CustomerRequest;
+import com.enigma.wmb_api.dto.request.UpdateCustomerRequest;
 import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
 import com.enigma.wmb_api.dto.response.AccountResponse;
 import com.enigma.wmb_api.dto.response.CommonResponse;
@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class CustomerController {
     private final CustomerService customerService;
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -68,6 +70,7 @@ public class CustomerController {
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -91,14 +94,14 @@ public class CustomerController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN') or @authorizeSecurity.checkSameIdAsPrincipal(#request)")
     @PutMapping(
-            path = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<CustomerResponse>> update(@RequestBody CustomerRequest request, @PathVariable String id) {
+    public ResponseEntity<CommonResponse<CustomerResponse>> update(@RequestBody UpdateCustomerRequest request) {
 
-        Customer result = customerService.update(request,id);
+        Customer result = customerService.update(request);
 
         CustomerResponse customerResponse = CustomerResponse.builder()
                 .id(result.getId())

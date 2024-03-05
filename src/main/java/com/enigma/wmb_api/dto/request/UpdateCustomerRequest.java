@@ -11,7 +11,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CustomerRequest {
+public class UpdateCustomerRequest {
+
+    private String id;
+
     @NotBlank(message = "name is required")
     @Size(min = 3, max = 50)
     private String customerName;

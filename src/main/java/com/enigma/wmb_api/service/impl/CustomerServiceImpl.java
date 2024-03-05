@@ -1,6 +1,6 @@
 package com.enigma.wmb_api.service.impl;
 
-import com.enigma.wmb_api.dto.request.CustomerRequest;
+import com.enigma.wmb_api.dto.request.UpdateCustomerRequest;
 import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
@@ -48,8 +48,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public Customer update(CustomerRequest request, String id) {
-        Customer customer = findBydIdThrowNotFound(id);
+    public Customer update(UpdateCustomerRequest request) {
+        Customer customer = findBydIdThrowNotFound(request.getId());
         validation.validate(request);
 
         customer.setCustomerName(request.getCustomerName());

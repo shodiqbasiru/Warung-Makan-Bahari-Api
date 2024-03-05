@@ -34,6 +34,21 @@ public class AuthController {
     }
 
     @PostMapping(
+            path = "/register/admin",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommonResponse<?>> registerAdmin(@RequestBody AuthRequest request) {
+        RegisterResponse registerResponse = authService.registerAdmin(request);
+        CommonResponse<RegisterResponse> response = CommonResponse.<RegisterResponse>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Created a new account successfully, please verify your email")
+                .data(registerResponse)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @PostMapping(
             path = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
