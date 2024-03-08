@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
         UserAccount account = UserAccount.builder()
                 .email("superadmin@gmail.com")
                 .password(passwordEncoder.encode(superAdminPassword))
-                .roles(List.of(superAdmin,admin,customer))
+                .roles(List.of(superAdmin, admin, customer))
                 .isEnable(true)
                 .isVerified(true)
                 .build();
@@ -89,29 +89,7 @@ public class AuthServiceImpl implements AuthService {
                 .isVerified(false)
                 .isEnable(true)
                 .build();
-        userRepository.saveAndFlush(account);
-
-        Customer customer = Customer.builder()
-                .customerName(request.getName())
-                .userAccount(account)
-                .build();
-        customerService.create(customer);
-
-        EmailRequest emailRequest = EmailRequest.builder()
-                .to(request.getEmail())
-                .subject("Email Verification OTP")
-                .body("""
-                        <h3>Click the link below to verify your account</h3>
-                        <div>
-                            <a href="http://localhost:8082/api/auth/verify-account?email=%s&otp=%s" target="_blank"> Click the link to verify</a>
-                        </div>
-                        """.formatted(request.getEmail(), otp))
-                .build();
-        try {
-            emailService.sendEmail(emailRequest);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Unable to send email");
-        }
+        getAuthRequestOtpAccount(request, otp, account);
 
         List<String> roles = account.getAuthorities().stream()
                 .map((GrantedAuthority::getAuthority)).toList();
@@ -130,36 +108,14 @@ public class AuthServiceImpl implements AuthService {
         UserAccount account = UserAccount.builder()
                 .email(request.getEmail())
                 .password(hashPassword)
-                .roles(List.of(roleAdmin,roleCustomer))
+                .roles(List.of(roleAdmin, roleCustomer))
                 .otp(otp)
                 .otpGenerateTime(LocalDateTime.now())
                 .isEnable(true)
                 .isVerified(false)
                 .build();
 
-        userRepository.saveAndFlush(account);
-
-        Customer customer = Customer.builder()
-                .customerName(request.getName())
-                .userAccount(account)
-                .build();
-        customerService.create(customer);
-
-        EmailRequest emailRequest = EmailRequest.builder()
-                .to(request.getEmail())
-                .subject("Email Verification OTP")
-                .body("""
-                        <h3>Click the link below to verify your account</h3>
-                        <div>
-                            <a href="http://localhost:8082/api/auth/verify-account?email=%s&otp=%s" target="_blank"> Click the link to verify</a>
-                        </div>
-                        """.formatted(request.getEmail(), otp))
-                .build();
-        try {
-            emailService.sendEmail(emailRequest);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Unable to send email");
-        }
+        getAuthRequestOtpAccount(request, otp, account);
 
         List<String> roles = account.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).toList();
@@ -180,8 +136,8 @@ public class AuthServiceImpl implements AuthService {
         Authentication authenticate = authenticationManager.authenticate(authentication);
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         UserAccount account = (UserAccount) authenticate.getPrincipal();
-        if (!account.getIsVerified()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Your account is not verified");
+        if (!account.getIsVerified()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Your account is not verified");
         }
         String token = jwtService.generateToken(account);
         return LoginResponse.builder()
@@ -228,5 +184,31 @@ public class AuthServiceImpl implements AuthService {
         account.setOtpGenerateTime(LocalDateTime.now());
         userRepository.saveAndFlush(account);
         return "Email sent, please verify account within 1 minute";
+    }
+
+    private void getAuthRequestOtpAccount(AuthRequest request, String otp, UserAccount account) {
+        userRepository.saveAndFlush(account);
+
+        Customer customer = Customer.builder()
+                .customerName(request.getName())
+                .userAccount(account)
+                .build();
+        customerService.create(customer);
+
+        EmailRequest emailRequest = EmailRequest.builder()
+                .to(request.getEmail())
+                .subject("Email Verification OTP")
+                .body("""
+                        <h3>Click the link below to verify your account</h3>
+                        <div>
+                            <a href="http://localhost:8082/api/auth/verify-account?email=%s&otp=%s" target="_blank"> Click the link to verify</a>
+                        </div>
+                        """.formatted(request.getEmail(), otp))
+                .build();
+        try {
+            emailService.sendEmail(emailRequest);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send email");
+        }
     }
 }
