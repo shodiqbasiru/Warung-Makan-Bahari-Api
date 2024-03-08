@@ -186,6 +186,18 @@ public class AuthServiceImpl implements AuthService {
         return "Email sent, please verify account within 1 minute";
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void checkAccountIsVerified() {
+        Boolean isVerified = true;
+        List<UserAccount> accounts = userRepository.findAllByIsVerified(isVerified);
+        for (UserAccount account : accounts) {
+            if (account.getIsVerified().equals(isVerified)){
+                account.setOtp(null);
+            }
+        }
+    }
+
     private void getAuthRequestOtpAccount(AuthRequest request, String otp, UserAccount account) {
         userRepository.saveAndFlush(account);
 

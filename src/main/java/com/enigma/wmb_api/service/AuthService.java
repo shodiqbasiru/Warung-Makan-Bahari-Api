@@ -10,4 +10,6 @@ public interface AuthService {
     LoginResponse login(AuthRequest request);
     String verifyAccount(String email, String otp);
     String regenerateOtp(String email);
+
+    void checkAccountIsVerified();
 }
