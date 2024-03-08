@@ -16,10 +16,13 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     @Column(name = "name", nullable = false)
     private String customerName;
+
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
+
     @OneToOne
     @JoinColumn(name = "user_account_id", unique = true)
     private UserAccount userAccount;

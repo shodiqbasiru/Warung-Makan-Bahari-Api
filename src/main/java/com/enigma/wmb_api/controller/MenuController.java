@@ -4,9 +4,12 @@ import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.MenuRequest;
 import com.enigma.wmb_api.dto.request.PaginationMenuRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
+import com.enigma.wmb_api.dto.response.MenuResponse;
 import com.enigma.wmb_api.dto.response.PaginationResponse;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.service.MenuService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,20 +27,33 @@ import java.util.List;
 public class MenuController {
 
     private final MenuService menuService;
+    private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Menu>> create(@RequestBody MenuRequest request) {
-        Menu result = menuService.create(request);
-        CommonResponse<Menu> response = CommonResponse.<Menu>builder()
-                .statusCode(HttpStatus.CREATED.value())
-                .message("Created a new menu successfully")
-                .data(result)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<CommonResponse<?>> create(
+            @RequestPart(name = "menu") String jsonMenu,
+            @RequestPart(name = "image", required = false) MultipartFile image
+    ) {
+        CommonResponse.CommonResponseBuilder<MenuResponse> builder = CommonResponse.builder();
+        try {
+            MenuRequest request = objectMapper.readValue(jsonMenu, new TypeReference<>() {
+            });
+            request.setImage(image);
+
+            MenuResponse response = menuService.create(request);
+            builder.statusCode(HttpStatus.CREATED.value());
+            builder.message("Created Data Successfully");
+            builder.data(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(builder.build());
+        } catch (Exception e) {
+            builder.message(e.getMessage());
+            builder.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(builder.build());
+        }
     }
 
     @GetMapping(
@@ -62,7 +79,7 @@ public class MenuController {
         PaginationResponse paginationResponse = PaginationResponse.builder()
                 .totalPages(result.getTotalPages())
                 .totalElements(result.getTotalElements())
-                .page(result.getPageable().getPageNumber()+1)
+                .page(result.getPageable().getPageNumber() + 1)
                 .size(result.getPageable().getPageSize())
                 .hasNext(result.hasNext())
                 .hasPrevious(result.hasPrevious())
@@ -93,17 +110,29 @@ public class MenuController {
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PutMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Menu>> update(@RequestBody Menu request) {
-        Menu result = menuService.update(request);
-        CommonResponse<Menu> response = CommonResponse.<Menu>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Updated menu successfully")
-                .data(result)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<CommonResponse<?>> update(
+            @RequestPart(name = "menu") String jsonMenu,
+            @RequestPart(name = "image", required = false) MultipartFile image
+    ) {
+        CommonResponse.CommonResponseBuilder<MenuResponse> builder = CommonResponse.builder();
+        try {
+            MenuRequest request = objectMapper.readValue(jsonMenu, new TypeReference<>() {
+            });
+            request.setImage(image);
+
+            MenuResponse response = menuService.update(request);
+            builder.statusCode(HttpStatus.CREATED.value());
+            builder.message("Created Data Successfully");
+            builder.data(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(builder.build());
+        } catch (Exception e) {
+            builder.message(e.getMessage());
+            builder.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(builder.build());
+        }
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")

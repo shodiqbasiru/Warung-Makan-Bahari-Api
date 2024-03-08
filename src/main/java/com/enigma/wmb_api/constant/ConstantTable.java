@@ -7,5 +7,6 @@ public class ConstantTable {
     public static final String TABLE_TRANS_TYPE="m_trans_type";
     public static final String TABLE_BILL="t_bill";
     public static final String TABLE_BILL_DETAIL="t_bill_detail";
+    public static final String TABLE_IMAGE="m_image";
 }
 

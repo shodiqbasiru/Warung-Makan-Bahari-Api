@@ -1,12 +1,18 @@
 package com.enigma.wmb_api.service.impl;
 
+import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.MenuRequest;
 import com.enigma.wmb_api.dto.request.PaginationMenuRequest;
+import com.enigma.wmb_api.dto.response.ImageResponse;
+import com.enigma.wmb_api.dto.response.MenuResponse;
+import com.enigma.wmb_api.entity.Image;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.MenuRepository;
+import com.enigma.wmb_api.service.ImageService;
 import com.enigma.wmb_api.service.MenuService;
 import com.enigma.wmb_api.specification.MenuSpecification;
 import com.enigma.wmb_api.util.ValidationUtil;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,17 +30,30 @@ public class MenuServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
     private final ValidationUtil validation;
+    private final ImageService imageService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Menu create(MenuRequest request) {
+    public MenuResponse create(MenuRequest request) {
         validation.validate(request);
+        if (request.getImage().isEmpty()) throw new ConstraintViolationException("image is required", null);
+        Image image = imageService.create(request.getImage());
         Menu newMenu = Menu.builder()
                 .menuName(request.getMenuName())
                 .price(request.getPrice())
+                .image(image)
                 .build();
-        return menuRepository.saveAndFlush(newMenu);
+        menuRepository.saveAndFlush(newMenu);
+        return convertMenuToMenuResponse(newMenu);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public MenuResponse getOneById(String id) {
+        Menu menu = findBydIdThrowNotFound(id);
+        return convertMenuToMenuResponse(menu);
+    }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -56,11 +75,24 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Menu update(Menu request) {
-        findBydIdThrowNotFound(request.getId());
+    public MenuResponse update(MenuRequest request) {
         validation.validate(request);
+        Menu currentMenu = findBydIdThrowNotFound(request.getId());
+        Image oldImage = currentMenu.getImage();
+        currentMenu.setMenuName(request.getMenuName());
+        currentMenu.setPrice(request.getPrice());
 
-        return menuRepository.saveAndFlush(request);
+        if (request.getImage() != null) {
+            Image image = imageService.create(request.getImage());
+            currentMenu.setImage(image);
+
+            if (oldImage != null) {
+                imageService.deleteById(oldImage.getId());
+            }
+        }
+        currentMenu = menuRepository.saveAndFlush(currentMenu);
+
+        return convertMenuToMenuResponse(currentMenu);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -70,8 +102,20 @@ public class MenuServiceImpl implements MenuService {
         menuRepository.delete(currentMenu);
     }
 
-
     private Menu findBydIdThrowNotFound(String id) {
         return menuRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
     }
+
+    private MenuResponse convertMenuToMenuResponse(Menu newMenu) {
+        return MenuResponse.builder()
+                .id(newMenu.getId())
+                .name(newMenu.getMenuName())
+                .price(newMenu.getPrice())
+                .image(ImageResponse.builder()
+                        .url(RouteApi.MENU_IMAGE_API_PATH + newMenu.getImage().getId())
+                        .name(newMenu.getImage().getName())
+                        .build())
+                .build();
+    }
+
 }
