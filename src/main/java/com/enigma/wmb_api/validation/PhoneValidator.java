@@ -3,14 +3,25 @@ package com.enigma.wmb_api.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.util.regex.Pattern;
+import static com.enigma.wmb_api.constant.PhoneNumberRegex.*;
 
-public class PhoneValidator implements ConstraintValidator<IndonesiaPhoneNumber,String> {
 
-    private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("(\\()?(\\+62|62|0)(\\d{2,3})?\\)?[ .-]?\\d{2,4}[ .-]?\\d{2,4}[ .-]?\\d{2,4}");
+public class PhoneValidator implements ConstraintValidator<IndonesiaPhoneNumber, String> {
 
     @Override
     public boolean isValid(String phone, ConstraintValidatorContext constraintValidatorContext) {
-        return phone != null && PHONE_NUMBER_PATTERN.matcher(phone).matches();
+        return phone != null && (
+                TELKOMSEL_NUMBER_PATTERN.matcher(phone).matches() ||
+                        SIMPATI_NUMBER_PATTERN.matcher(phone).matches() ||
+                        AS_NUMBER_PATTERN.matcher(phone).matches() ||
+                        INDOSAT_NUMBER_PATTERN.matcher(phone).matches() ||
+                        IM3_NUMBER_PATTERN.matcher(phone).matches() ||
+                        XL_NUMBER_PATTERN.matcher(phone).matches() ||
+                        AXIS_NUMBER_PATTERN.matcher(phone).matches() ||
+                        TRI_NUMBER_PATTERN.matcher(phone).matches() ||
+                        SMARTFREN_NUMBER_PATTERN.matcher(phone).matches() ||
+                        BYU_NUMBER_PATTERN.matcher(phone).matches() ||
+                        OTHERS_NUMBER_PATTERN.matcher(phone).matches()
+        );
     }
 }
