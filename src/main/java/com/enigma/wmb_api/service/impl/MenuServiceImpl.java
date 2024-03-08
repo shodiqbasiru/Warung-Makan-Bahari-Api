@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -24,6 +25,7 @@ public class MenuServiceImpl implements MenuService {
     private final MenuRepository menuRepository;
     private final ValidationUtil validation;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Menu create(MenuRequest request) {
         validation.validate(request);
@@ -34,11 +36,13 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.saveAndFlush(newMenu);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Menu getById(String id) {
         return findBydIdThrowNotFound(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<Menu> getAll(PaginationMenuRequest request) {
         if (request.getPage() <= 0) request.setPage(1);
@@ -50,6 +54,7 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.findAll(specification, pageable);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Menu update(Menu request) {
         findBydIdThrowNotFound(request.getId());
@@ -58,6 +63,7 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.saveAndFlush(request);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void delete(String id) {
         Menu currentMenu = findBydIdThrowNotFound(id);

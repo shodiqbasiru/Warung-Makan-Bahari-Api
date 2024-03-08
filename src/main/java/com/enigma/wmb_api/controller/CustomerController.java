@@ -119,6 +119,7 @@ public class CustomerController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @DeleteMapping(
             path = "/{id}"
     )

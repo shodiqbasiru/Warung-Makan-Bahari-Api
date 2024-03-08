@@ -27,7 +27,7 @@ public class BillServiceImpl implements BillService {
     private final MenuService menuService;
     private final ValidationUtil validation;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public BillResponse create(BillRequest request) {
         Customer customerId = customerService.getById(request.getCustomerId());
@@ -82,6 +82,7 @@ public class BillServiceImpl implements BillService {
                 .build();
     }
 
+   @Transactional(readOnly = true)
     @Override
     public Page<BillResponse> getAll(PaginationBillRequest request) {
         if (request.getPage() < 0) request.setPage(1);

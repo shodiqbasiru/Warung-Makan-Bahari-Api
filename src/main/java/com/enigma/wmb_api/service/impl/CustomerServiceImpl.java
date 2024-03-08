@@ -24,17 +24,19 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final ValidationUtil validation;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Customer create(Customer customer) {
         return customerRepository.saveAndFlush(customer);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Customer getById(String id) {
         return findBydIdThrowNotFound(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<Customer> getAll(PaginationCustomerRequest request) {
         if (request.getPage() <= 0) request.setPage(1);
@@ -46,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll(specification, pageable);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Customer update(UpdateCustomerRequest request) {
         Customer customer = findBydIdThrowNotFound(request.getId());
@@ -58,6 +60,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.saveAndFlush(customer);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void delete(String id) {
         Customer currentCustomer = findBydIdThrowNotFound(id);
