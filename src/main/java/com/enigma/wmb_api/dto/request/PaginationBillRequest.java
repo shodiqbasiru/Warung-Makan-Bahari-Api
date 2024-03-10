@@ -12,4 +12,6 @@ public class PaginationBillRequest {
     private Integer size;
     private String sortBy;
     private String direction;
+    private String startDate;
+    private String endDate;
 }

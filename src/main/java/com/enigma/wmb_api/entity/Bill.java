@@ -21,7 +21,7 @@ public class Bill {
     private String id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "trans_date", nullable = false, updatable = false)
+    @Column(name = "trans_date", updatable = false)
     private Date date;
 
     @ManyToOne

@@ -64,7 +64,9 @@ public class MenuController {
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", defaultValue = "menuName") String sortBy,
             @RequestParam(name = "direction", defaultValue = "asc") String direction,
-            @RequestParam(name = "customerName", required = false) String name
+            @RequestParam(name = "menuName", required = false) String name,
+            @RequestParam(name = "minPrice", required = false) Integer minPrice,
+            @RequestParam(name = "maxPrice", required = false) Integer maxPrice
     ) {
         PaginationMenuRequest pageRequest = PaginationMenuRequest.builder()
                 .page(page)
@@ -72,6 +74,8 @@ public class MenuController {
                 .sortBy(sortBy)
                 .direction(direction)
                 .name(name)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
                 .build();
 
         Page<Menu> result = menuService.getAll(pageRequest);

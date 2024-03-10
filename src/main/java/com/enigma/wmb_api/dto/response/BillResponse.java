@@ -1,6 +1,6 @@
 package com.enigma.wmb_api.dto.response;
 
-import com.enigma.wmb_api.dto.request.BillDetailRequest;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.util.Date;
@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class BillResponse {
     private String id;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
     private String customerId;
     private String tableId;

@@ -9,9 +9,11 @@ import com.enigma.wmb_api.dto.response.PaymentResponse;
 import com.enigma.wmb_api.entity.*;
 import com.enigma.wmb_api.repository.BillRepository;
 import com.enigma.wmb_api.service.*;
+import com.enigma.wmb_api.specification.BillSpecification;
 import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,16 +100,45 @@ public class BillServiceImpl implements BillService {
                 .build();
     }
 
-   @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     @Override
     public Page<BillResponse> getAll(PaginationBillRequest request) {
         if (request.getPage() < 0) request.setPage(1);
 
         Sort sort = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
         Pageable pageable = PageRequest.of((request.getPage() - 1), request.getSize(), sort);
+        Specification<Bill> specification = BillSpecification.getSpecification(request);
 
-        Page<Bill> billPage = billRepository.findAll(pageable);
-        List<BillResponse> billResponses = billPage.getContent().stream()
+        Page<Bill> billPage = billRepository.findAll(specification,pageable);
+        return billPage.map(bill -> {
+            List<BillDetailResponse> billDetailResponses = bill.getBillDetails().stream()
+                    .map(detail -> BillDetailResponse.builder()
+                            .id(detail.getId())
+                            .menuId(detail.getMenu().getId())
+                            .qty(detail.getQty())
+                            .price(detail.getPrice())
+                            .build())
+                    .toList();
+
+            String idTable = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
+
+            PaymentResponse paymentResponse = PaymentResponse.builder()
+                    .id(bill.getPayment().getId())
+                    .token(bill.getPayment().getToken())
+                    .redirectUrl(bill.getPayment().getRedirectUrl())
+                    .transactionStatus(bill.getPayment().getTransactionStatus())
+                    .build();
+            return BillResponse.builder()
+                    .id(bill.getId())
+                    .date(bill.getDate())
+                    .customerId(bill.getCustomer().getId())
+                    .tableId(idTable)
+                    .transType(bill.getTransType().getId().toString())
+                    .billDetailResponses(billDetailResponses)
+                    .paymentResponse(paymentResponse)
+                    .build();
+        });
+        /*List<BillResponse> billResponses = billPage.getContent().stream()
                 .map(bill -> {
                     List<BillDetailResponse> billDetailResponses = bill.getBillDetails().stream()
                             .map(detail -> BillDetailResponse.builder()
@@ -119,6 +150,13 @@ public class BillServiceImpl implements BillService {
                             .toList();
 
                     String idTable = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
+
+                    PaymentResponse paymentResponse = PaymentResponse.builder()
+                            .id(bill.getPayment().getId())
+                            .token(bill.getPayment().getToken())
+                            .redirectUrl(bill.getPayment().getRedirectUrl())
+                            .transactionStatus(bill.getPayment().getTransactionStatus())
+                            .build();
                     return BillResponse.builder()
                             .id(bill.getId())
                             .date(bill.getDate())
@@ -126,10 +164,11 @@ public class BillServiceImpl implements BillService {
                             .tableId(idTable)
                             .transType(bill.getTransType().getId().toString())
                             .billDetailResponses(billDetailResponses)
+                            .paymentResponse(paymentResponse)
                             .build();
                 })
                 .toList();
-        return new PageImpl<>(billResponses,pageable,billPage.getTotalElements());
+        return new PageImpl<>(billResponses,pageable,billPage.getTotalElements());*/
 
     }
 

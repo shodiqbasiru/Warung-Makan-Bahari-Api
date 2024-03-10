@@ -21,6 +21,24 @@ public class MenuSpecification {
                         )
                 );
             }
+
+            if (request.getMinPrice()!=null){
+                predicates.add(
+                        criteriaBuilder.greaterThanOrEqualTo(
+                                root.get("price"),
+                                request.getMinPrice()
+                        )
+                );
+            }
+
+            if (request.getMaxPrice()!=null){
+                predicates.add(
+                        criteriaBuilder.lessThanOrEqualTo(
+                                root.get("price"),
+                                request.getMaxPrice()
+                        )
+                );
+            }
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
     }

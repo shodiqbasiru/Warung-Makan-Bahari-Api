@@ -49,13 +49,17 @@ public class BillController {
             @RequestParam(name = "page",defaultValue = "1") Integer page,
             @RequestParam(name = "size",defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy",defaultValue = "date") String sortBy,
-            @RequestParam(name = "direction",defaultValue = "asc") String direction
+            @RequestParam(name = "direction",defaultValue = "asc") String direction,
+            @RequestParam(name = "startDate",required = false) String startDate,
+            @RequestParam(name = "endDate",required = false) String endDate
     ) {
         PaginationBillRequest billRequest = PaginationBillRequest.builder()
                 .page(page)
                 .size(size)
                 .sortBy(sortBy)
                 .direction(direction)
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
         Page<BillResponse> result = billService.getAll(billRequest);
 
