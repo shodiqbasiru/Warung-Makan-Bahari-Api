@@ -36,6 +36,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/bills/status").permitAll()
                         .requestMatchers("/api-docs/**","/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/menus/export-csv").permitAll()
+                        .requestMatchers("/api/customers/export-csv").permitAll()
+                        .requestMatchers("/api/bills/export-csv").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

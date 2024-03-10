@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MenuServiceImpl implements MenuService {
@@ -71,6 +73,11 @@ public class MenuServiceImpl implements MenuService {
         Specification<Menu> specification = MenuSpecification.getSpecification(request);
 
         return menuRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public List<Menu> getAll() {
+        return menuRepository.findAll();
     }
 
     @Transactional(rollbackFor = Exception.class)

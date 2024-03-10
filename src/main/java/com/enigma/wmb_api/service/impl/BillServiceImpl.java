@@ -172,6 +172,11 @@ public class BillServiceImpl implements BillService {
 
     }
 
+    @Override
+    public List<Bill> getAll() {
+        return billRepository.findAll();
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateStatus(UpdateTransactionStatusRequest request) {
