@@ -8,6 +8,9 @@ import com.enigma.wmb_api.dto.response.BillResponse;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PaginationResponse;
 import com.enigma.wmb_api.service.BillService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -22,9 +25,15 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = RouteApi.BILL_PATH)
+@Tag(name = "Bill", description = "Bill API")
 public class BillController {
     private final BillService billService;
 
+    @Operation(
+            summary = "Create new transaction",
+            description = "Create new transaction"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -40,6 +49,11 @@ public class BillController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Get all transaction",
+            description = "Get all transaction"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','CUSTOMER')")
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -80,6 +94,11 @@ public class BillController {
         return new ResponseEntity<>(responses,HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Get transaction by id",
+            description = "Get transaction by id"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PostMapping(path = "/status")
     public ResponseEntity<CommonResponse<?>>updateStatus(@RequestBody Map<String, Object> request) {
         UpdateTransactionStatusRequest updateTransactionStatusRequest = UpdateTransactionStatusRequest.builder()
