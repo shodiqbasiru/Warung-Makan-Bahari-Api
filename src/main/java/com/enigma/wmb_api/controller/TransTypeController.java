@@ -5,6 +5,9 @@ import com.enigma.wmb_api.constant.TransTypeEnum;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.entity.TransType;
 import com.enigma.wmb_api.service.TransTypeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,9 +20,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = RouteApi.TRANS_TYPE_PATH)
+@Tag(name = "TransType", description = "TransType API")
 public class TransTypeController {
     private final TransTypeService typeService;
 
+    @Operation(
+            summary = "Get all trans type",
+            description = "Get all trans type"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -34,6 +43,11 @@ public class TransTypeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Find By id trans type",
+            description = "Find By id trans type"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             path = "/{id}",
@@ -50,6 +64,11 @@ public class TransTypeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Update trans type",
+            description = "Update trans type"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,

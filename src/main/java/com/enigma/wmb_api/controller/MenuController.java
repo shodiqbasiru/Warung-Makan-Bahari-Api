@@ -10,6 +10,9 @@ import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.service.MenuService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,11 +27,17 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = RouteApi.MENU_PATH)
+@Tag(name = "Menu", description = "Menu API")
 public class MenuController {
 
     private final MenuService menuService;
     private final ObjectMapper objectMapper;
 
+    @Operation(
+            summary = "Create new menu",
+            description = "Create new menu"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -56,6 +65,12 @@ public class MenuController {
         }
     }
 
+    @Operation(
+            summary = "Get all menu",
+            description = "Get all menu"
+    )
+    @SecurityRequirement(name = "Authorization")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','CUSTOMER')")
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -98,6 +113,11 @@ public class MenuController {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Get menu by id",
+            description = "Get menu by id"
+    )
+    @SecurityRequirement(name = "Authorization")
     @GetMapping(
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -112,6 +132,11 @@ public class MenuController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Update menu",
+            description = "Update menu"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PutMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -139,6 +164,11 @@ public class MenuController {
         }
     }
 
+    @Operation(
+            summary = "Delete menu",
+            description = "Delete menu"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @DeleteMapping(
             path = "/{id}"

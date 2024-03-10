@@ -10,6 +10,9 @@ import com.enigma.wmb_api.dto.response.PaginationResponse;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.entity.UserAccount;
 import com.enigma.wmb_api.service.CustomerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,9 +28,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = RouteApi.CUSTOMER_PATH)
+@Tag(name = "Customer", description = "API for Customer")
 public class CustomerController {
     private final CustomerService customerService;
 
+    @Operation(
+            summary = "Create new customer",
+            description = "Create new customer"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -70,6 +79,11 @@ public class CustomerController {
         return ResponseEntity.ok(responses);
     }
 
+    @Operation(
+            summary = "Find by id customer",
+            description = "find by id customer"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             path = "/{id}",
@@ -94,6 +108,11 @@ public class CustomerController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Update customer",
+            description = "Update customer"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN') or @authorizeSecurity.checkSameIdAsPrincipal(#request)")
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -119,6 +138,11 @@ public class CustomerController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Delete customer",
+            description = "Delete customer"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @DeleteMapping(
             path = "/{id}"

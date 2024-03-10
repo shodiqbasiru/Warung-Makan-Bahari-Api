@@ -5,6 +5,9 @@ import com.enigma.wmb_api.dto.request.TableRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.entity.MTable;
 import com.enigma.wmb_api.service.TableService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,9 +20,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = RouteApi.TABLE_PATH)
+@Tag(name = "Table", description = "Table API")
 public class TableController {
     private final TableService tableService;
 
+    @Operation(
+            summary = "Create new table",
+            description = "Create new table"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -35,6 +44,11 @@ public class TableController {
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary = "Get all table",
+            description = "Get all table"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -49,6 +63,11 @@ public class TableController {
         return new ResponseEntity<>(responses,HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Get table by id",
+            description = "Get table by id"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             path = "/{id}",
@@ -64,6 +83,11 @@ public class TableController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Update table",
+            description = "Update table"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -79,6 +103,11 @@ public class TableController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Delete table",
+            description = "Delete table"
+    )
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @DeleteMapping(
             path = "/{id}"
