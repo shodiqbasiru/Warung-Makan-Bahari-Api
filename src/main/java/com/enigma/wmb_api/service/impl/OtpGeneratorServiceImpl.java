@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
-public class OtpGenerationServiceImpl implements OtpGenerationService {
+public class OtpGeneratorServiceImpl implements OtpGenerationService {
     @Override
     public String generateOtp() {
         Random random = new Random();
