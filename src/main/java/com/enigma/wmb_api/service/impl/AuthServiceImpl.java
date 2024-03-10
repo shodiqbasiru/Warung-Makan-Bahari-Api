@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final ValidationUtil validation;
     private final EmailService emailService;
-    private final OtpGenerationService otpService;
+    private final OtpGeneratorService otpService;
     private final AuthenticationManager authenticationManager;
 
     @Value("${enigma_shop.email.superadmin}")
