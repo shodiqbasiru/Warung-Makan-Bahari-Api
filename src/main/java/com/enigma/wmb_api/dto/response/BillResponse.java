@@ -18,4 +18,5 @@ public class BillResponse {
     private String tableId;
     private String transType;
     private List<BillDetailResponse> billDetailResponses;
+    private PaymentResponse paymentResponse;
 }

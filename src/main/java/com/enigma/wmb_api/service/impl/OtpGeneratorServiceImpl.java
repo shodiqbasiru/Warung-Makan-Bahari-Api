@@ -1,12 +1,12 @@
 package com.enigma.wmb_api.service.impl;
 
-import com.enigma.wmb_api.service.OtpGenerationService;
+import com.enigma.wmb_api.service.OtpGeneratorService;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
 @Service
-public class OtpGeneratorServiceImpl implements OtpGenerationService {
+public class OtpGeneratorServiceImpl implements OtpGeneratorService {
     @Override
     public String generateOtp() {
         Random random = new Random();

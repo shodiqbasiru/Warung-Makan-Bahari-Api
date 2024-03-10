@@ -2,16 +2,20 @@ package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.BillRequest;
 import com.enigma.wmb_api.dto.request.PaginationBillRequest;
+import com.enigma.wmb_api.dto.request.UpdateTransactionStatusRequest;
 import com.enigma.wmb_api.dto.response.BillDetailResponse;
 import com.enigma.wmb_api.dto.response.BillResponse;
+import com.enigma.wmb_api.dto.response.PaymentResponse;
 import com.enigma.wmb_api.entity.*;
 import com.enigma.wmb_api.repository.BillRepository;
 import com.enigma.wmb_api.service.*;
 import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -26,6 +30,7 @@ public class BillServiceImpl implements BillService {
     private final TransTypeService typeService;
     private final MenuService menuService;
     private final ValidationUtil validation;
+    private final PaymentService paymentService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -61,6 +66,16 @@ public class BillServiceImpl implements BillService {
         billDetailService.createBulk(billDetails);
         bill.setBillDetails(billDetails);
 
+        Payment payment = paymentService.createPayment(bill);
+        bill.setPayment(payment);
+
+        PaymentResponse paymentResponse = PaymentResponse.builder()
+                .id(payment.getId())
+                .token(payment.getToken())
+                .redirectUrl(payment.getRedirectUrl())
+                .transactionStatus(payment.getTransactionStatus())
+                .build();
+
         List<BillDetailResponse> billDetailResponses = billDetails.stream()
                 .map(detail -> BillDetailResponse.builder()
                         .id(detail.getId())
@@ -79,6 +94,7 @@ public class BillServiceImpl implements BillService {
                 .tableId(idTable)
                 .transType(bill.getTransType().getId().toString())
                 .billDetailResponses(billDetailResponses)
+                .paymentResponse(paymentResponse)
                 .build();
     }
 
@@ -115,6 +131,16 @@ public class BillServiceImpl implements BillService {
                 .toList();
         return new PageImpl<>(billResponses,pageable,billPage.getTotalElements());
 
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateStatus(UpdateTransactionStatusRequest request) {
+        Bill bill = billRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "order not found"));
+
+        Payment payment = bill.getPayment();
+        payment.setTransactionStatus(request.getTransactionStatus());
     }
 
 }

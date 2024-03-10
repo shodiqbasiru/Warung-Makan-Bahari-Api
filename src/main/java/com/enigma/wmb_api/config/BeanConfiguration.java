@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 
 @Component
 public class BeanConfiguration {
@@ -26,4 +27,9 @@ public class BeanConfiguration {
 
     @Bean
     public ObjectMapper objectMapper(){ return new ObjectMapper(); }
+
+    @Bean
+    public RestClient restClient(){
+        return RestClient.create();
+    }
 }

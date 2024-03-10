@@ -3,10 +3,12 @@ package com.enigma.wmb_api.controller;
 import com.enigma.wmb_api.constant.RouteApi;
 import com.enigma.wmb_api.dto.request.BillRequest;
 import com.enigma.wmb_api.dto.request.PaginationBillRequest;
+import com.enigma.wmb_api.dto.request.UpdateTransactionStatusRequest;
 import com.enigma.wmb_api.dto.response.BillResponse;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PaginationResponse;
 import com.enigma.wmb_api.service.BillService;
+import com.enigma.wmb_api.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,5 +75,18 @@ public class BillController {
                 .pages(paginationResponse)
                 .build();
         return new ResponseEntity<>(responses,HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/status")
+    public ResponseEntity<CommonResponse<?>>updateStatus(@RequestBody Map<String, Object> request) {
+        UpdateTransactionStatusRequest updateTransactionStatusRequest = UpdateTransactionStatusRequest.builder()
+                .orderId(request.get("order_id").toString())
+                .transactionStatus(request.get("transaction_status").toString())
+                .build();
+        billService.updateStatus(updateTransactionStatusRequest);
+        return ResponseEntity.ok(CommonResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Success")
+                .build());
     }
 }
