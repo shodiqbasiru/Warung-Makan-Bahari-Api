@@ -138,6 +138,8 @@ public class BillServiceImpl implements BillService {
                     .paymentResponse(paymentResponse)
                     .build();
         });
+
+        // another way to do the same thing
         /*List<BillResponse> billResponses = billPage.getContent().stream()
                 .map(bill -> {
                     List<BillDetailResponse> billDetailResponses = bill.getBillDetails().stream()
