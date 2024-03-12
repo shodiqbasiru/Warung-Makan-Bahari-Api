@@ -16,8 +16,14 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     @Column(name = "name", nullable = false)
     private String menuName;
+
     @Column(name = "price", nullable = false)
-    private Float price;
+    private Integer price;
+
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
 }

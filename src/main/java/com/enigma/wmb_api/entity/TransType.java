@@ -1,6 +1,7 @@
 package com.enigma.wmb_api.entity;
 
 import com.enigma.wmb_api.constant.ConstantTable;
+import com.enigma.wmb_api.constant.TransTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,8 @@ import lombok.*;
 @Table(name = ConstantTable.TABLE_TRANS_TYPE)
 public class TransType {
     @Id
-    private String id;
-    @Column(name = "description",nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TransTypeEnum id;
+    @Column(name = "description", nullable = false)
     private String description;
 }

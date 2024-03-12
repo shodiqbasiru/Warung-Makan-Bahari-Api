@@ -19,19 +19,28 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "trans_date", nullable = false, updatable = false)
+    @Column(name = "trans_date", updatable = false)
     private Date date;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
     @ManyToOne
     @JoinColumn(name = "table_id")
     private MTable mTable;
+
     @ManyToOne
     @JoinColumn(name = "trans_type", nullable = false)
     private TransType transType;
+
     @OneToMany(mappedBy = "bill")
     @JsonManagedReference
     private List<BillDetail> billDetails;
+
+    @OneToOne
+    @JoinColumn(name = "payment_id",unique = true)
+    private Payment payment;
 }
