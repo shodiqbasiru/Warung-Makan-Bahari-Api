@@ -12,5 +12,6 @@ import java.util.List;
 public class AccountResponse {
     private String id;
     private String email;
+    private Boolean isAccountActive;
     private List<String> roles;
 }

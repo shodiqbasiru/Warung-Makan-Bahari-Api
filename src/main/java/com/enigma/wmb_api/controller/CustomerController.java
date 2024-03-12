@@ -177,6 +177,7 @@ public class CustomerController {
                     .id(userAccount.getId())
                     .email(userAccount.getEmail())
                     .roles(roles)
+                    .isAccountActive(userAccount.isEnabled())
                     .build();
         }
         return null;
