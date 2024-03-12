@@ -138,40 +138,6 @@ public class BillServiceImpl implements BillService {
                     .paymentResponse(paymentResponse)
                     .build();
         });
-
-        // another way to do the same thing
-        /*List<BillResponse> billResponses = billPage.getContent().stream()
-                .map(bill -> {
-                    List<BillDetailResponse> billDetailResponses = bill.getBillDetails().stream()
-                            .map(detail -> BillDetailResponse.builder()
-                                    .id(detail.getId())
-                                    .menuId(detail.getMenu().getId())
-                                    .qty(detail.getQty())
-                                    .price(detail.getPrice())
-                                    .build())
-                            .toList();
-
-                    String idTable = (bill.getMTable() != null) ? bill.getMTable().getId() : null;
-
-                    PaymentResponse paymentResponse = PaymentResponse.builder()
-                            .id(bill.getPayment().getId())
-                            .token(bill.getPayment().getToken())
-                            .redirectUrl(bill.getPayment().getRedirectUrl())
-                            .transactionStatus(bill.getPayment().getTransactionStatus())
-                            .build();
-                    return BillResponse.builder()
-                            .id(bill.getId())
-                            .date(bill.getDate())
-                            .customerId(bill.getCustomer().getId())
-                            .tableId(idTable)
-                            .transType(bill.getTransType().getId().toString())
-                            .billDetailResponses(billDetailResponses)
-                            .paymentResponse(paymentResponse)
-                            .build();
-                })
-                .toList();
-        return new PageImpl<>(billResponses,pageable,billPage.getTotalElements());*/
-
     }
 
     @Override

@@ -116,7 +116,7 @@ public class MenuServiceImpl implements MenuService {
     private MenuResponse convertMenuToMenuResponse(Menu newMenu) {
         return MenuResponse.builder()
                 .id(newMenu.getId())
-                .name(newMenu.getMenuName())
+                .menuName(newMenu.getMenuName())
                 .price(newMenu.getPrice())
                 .image(ImageResponse.builder()
                         .url(RouteApi.MENU_IMAGE_API_PATH + newMenu.getImage().getId())

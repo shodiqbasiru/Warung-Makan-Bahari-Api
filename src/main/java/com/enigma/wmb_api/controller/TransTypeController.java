@@ -76,11 +76,11 @@ public class TransTypeController {
     public ResponseEntity<CommonResponse<TransType>> update(@RequestBody TransType transType) {
         TransType result = typeService.update(transType);
         CommonResponse<TransType> response = CommonResponse.<TransType>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Updates data successfully")
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Updated data successfully")
                 .data(result)
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 }

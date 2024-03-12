@@ -75,11 +75,11 @@ public class AuthController {
     public ResponseEntity<CommonResponse<?>> login(@RequestBody AuthRequest request) {
         LoginResponse loginResponse = authService.login(request);
         CommonResponse<LoginResponse> response = CommonResponse.<LoginResponse>builder()
-                .statusCode(HttpStatus.CREATED.value())
+                .statusCode(HttpStatus.OK.value())
                 .message("Created a new account successfully")
                 .data(loginResponse)
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(
@@ -97,7 +97,8 @@ public class AuthController {
         String verifyAccount = authService.verifyAccount(email, otp);
         CommonResponse<?> response = CommonResponse.builder()
                 .statusCode(HttpStatus.OK.value())
-                .message(verifyAccount)
+                .data(verifyAccount)
+                .message("verify account successfully")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -116,7 +117,8 @@ public class AuthController {
         String verifyAccount = authService.regenerateOtp(email);
         CommonResponse<?> response = CommonResponse.builder()
                 .statusCode(HttpStatus.OK.value())
-                .message(verifyAccount)
+                .data(verifyAccount)
+                .message("regenerate otp successfully")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

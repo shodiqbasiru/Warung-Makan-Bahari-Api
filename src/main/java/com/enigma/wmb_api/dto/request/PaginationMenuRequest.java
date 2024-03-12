@@ -12,7 +12,7 @@ public class PaginationMenuRequest {
     private Integer size;
     private String sortBy;
     private String direction;
-    private String name;
+    private String menuName;
     private Integer minPrice;
     private Integer maxPrice;
 }

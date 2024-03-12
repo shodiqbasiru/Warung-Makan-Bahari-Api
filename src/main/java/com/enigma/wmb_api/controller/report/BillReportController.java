@@ -1,6 +1,8 @@
 package com.enigma.wmb_api.controller.report;
 
 import com.enigma.wmb_api.constant.RouteApi;
+import com.enigma.wmb_api.dto.request.PaginationBillRequest;
+import com.enigma.wmb_api.dto.response.BillResponse;
 import com.enigma.wmb_api.entity.Bill;
 import com.enigma.wmb_api.service.BillService;
 import com.itextpdf.kernel.geom.PageSize;
@@ -15,12 +17,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -130,6 +135,7 @@ public class BillReportController {
 
         }
     }
+
 
     // excel export
 }

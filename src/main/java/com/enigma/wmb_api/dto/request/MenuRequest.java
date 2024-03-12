@@ -1,5 +1,6 @@
 package com.enigma.wmb_api.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,5 +24,6 @@ public class MenuRequest {
     @Min(value = 0)
     private Integer price;
 
+    @JsonIgnore
     private MultipartFile image;
 }

@@ -64,7 +64,8 @@ public class BillController {
             @RequestParam(name = "sortBy",defaultValue = "date") String sortBy,
             @RequestParam(name = "direction",defaultValue = "asc") String direction,
             @RequestParam(name = "startDate",required = false) String startDate,
-            @RequestParam(name = "endDate",required = false) String endDate
+            @RequestParam(name = "endDate",required = false) String endDate,
+            @RequestParam(name = "customerId",required = false) String customerId
     ) {
         PaginationBillRequest billRequest = PaginationBillRequest.builder()
                 .page(page)
@@ -73,6 +74,7 @@ public class BillController {
                 .direction(direction)
                 .startDate(startDate)
                 .endDate(endDate)
+                .customerId(customerId)
                 .build();
         Page<BillResponse> result = billService.getAll(billRequest);
 

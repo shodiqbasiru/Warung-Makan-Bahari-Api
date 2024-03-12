@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class MenuResponse {
     private String id;
-    private String name;
+    private String menuName;
     private Integer price;
     private ImageResponse image;
 }

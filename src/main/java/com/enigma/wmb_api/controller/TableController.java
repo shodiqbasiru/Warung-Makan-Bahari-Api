@@ -96,11 +96,11 @@ public class TableController {
     public ResponseEntity<CommonResponse<MTable>> update(@RequestBody MTable request) {
         MTable result = tableService.update(request);
         CommonResponse<MTable> response = CommonResponse.<MTable>builder()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.CREATED.value())
                 .message("Updated data successfully")
                 .data(result)
                 .build();
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
     @Operation(

@@ -130,12 +130,12 @@ public class CustomerController {
                 .build();
 
         CommonResponse<CustomerResponse> response = CommonResponse.<CustomerResponse>builder()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.CREATED.value())
                 .message("Updated data successfully")
                 .data(customerResponse)
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
     @Operation(

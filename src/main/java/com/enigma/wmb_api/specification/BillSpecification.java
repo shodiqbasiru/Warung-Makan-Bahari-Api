@@ -13,7 +13,7 @@ public class BillSpecification {
     public static Specification<Bill> getSpecification(PaginationBillRequest request) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (request.getStartDate()!=null){
+            if (request.getStartDate() != null) {
                 predicates.add(
                         criteriaBuilder.greaterThanOrEqualTo(
                                 root.get("date"),
@@ -22,11 +22,20 @@ public class BillSpecification {
                 );
             }
 
-            if (request.getEndDate()!=null){
+            if (request.getEndDate() != null) {
                 predicates.add(
                         criteriaBuilder.lessThanOrEqualTo(
                                 root.get("date"),
                                 DateUtil.parseDate(request.getEndDate(), "yyyy-MM-dd")
+                        )
+                );
+            }
+
+            if (request.getCustomerId() != null) {
+                predicates.add(
+                        criteriaBuilder.equal(
+                                root.get("customer").get("id"),
+                                request.getCustomerId()
                         )
                 );
             }

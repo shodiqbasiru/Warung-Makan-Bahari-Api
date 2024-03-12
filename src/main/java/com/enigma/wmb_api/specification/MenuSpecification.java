@@ -13,11 +13,11 @@ public class MenuSpecification {
         return (root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
-            if (request.getName()!=null){
+            if (request.getMenuName()!=null){
                 predicates.add(
                         criteriaBuilder.like(
                                 criteriaBuilder.lower(root.get("menuName")),
-                                "%"+request.getName().toLowerCase()+"%"
+                                "%"+request.getMenuName().toLowerCase()+"%"
                         )
                 );
             }

@@ -88,7 +88,7 @@ public class MenuController {
                 .size(size)
                 .sortBy(sortBy)
                 .direction(direction)
-                .name(name)
+                .menuName(name)
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
                 .build();
@@ -106,7 +106,7 @@ public class MenuController {
 
         CommonResponse<List<Menu>> responses = CommonResponse.<List<Menu>>builder()
                 .statusCode(HttpStatus.OK.value())
-                .message("Get all menu successfully")
+                .message("Get all data successfully")
                 .data(result.getContent())
                 .pages(paginationResponse)
                 .build();
@@ -126,7 +126,7 @@ public class MenuController {
         Menu result = menuService.getById(id);
         CommonResponse<Menu> response = CommonResponse.<Menu>builder()
                 .statusCode(HttpStatus.OK.value())
-                .message("Get menu successfully")
+                .message("Get data successfully")
                 .data(result)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -177,7 +177,7 @@ public class MenuController {
         menuService.delete(id);
         CommonResponse<Menu> response = CommonResponse.<Menu>builder()
                 .statusCode(HttpStatus.OK.value())
-                .message("Deleted menu successfully")
+                .message("Deleted data successfully")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
