@@ -38,15 +38,17 @@ public class CustomerReportController {
         response.setHeader("Content-Disposition", "attachment; filename=customers.csv");
 
         try (PrintWriter writer = response.getWriter()) {
-            writer.println("Customer Id,Full Name,Email,Phone");
-            customerService.getAll().forEach(customer ->
-                    writer.printf("%s,%s,%s,%s%n",
-                            customer.getId(),
-                            customer.getCustomerName(),
-                            customer.getUserAccount().getEmail(),
-                            customer.getPhoneNumber()
-                    )
-            );
+            writer.println("Customer Id,Full Name,Email,Phone,account active");
+            customerService.getAll().forEach(customer -> {
+                if (customer.getCustomerName().contains("admin")) return;
+                writer.printf("%s,%s,%s,%s,%s%n",
+                        customer.getId(),
+                        customer.getCustomerName(),
+                        customer.getUserAccount().getEmail(),
+                        customer.getPhoneNumber(),
+                        customer.getUserAccount().isEnabled()
+                );
+            });
         }
     }
 
@@ -68,14 +70,14 @@ public class CustomerReportController {
 
         PdfWriter writer = new PdfWriter(response.getOutputStream());
         PdfDocument pdf = new PdfDocument(writer);
-        try (Document document = new Document(pdf)){
+        try (Document document = new Document(pdf)) {
             document.add(new Paragraph("Customer List").setFontSize(fonTitle).setBold().setTextAlignment(TextAlignment.CENTER));
             document.add(new Paragraph("\n"));
 
             // Create Table Columns
-            Table table = new Table(UnitValue.createPercentArray(4));
+            Table table = new Table(UnitValue.createPercentArray(5));
 
-            String[] headers = {"Customer Id", "Full Name", "Email", "Phone"};
+            String[] headers = {"Customer Id", "Full Name", "Email", "Phone", "Account Active"};
             for (String header : headers) {
                 table.addHeaderCell(header);
             }
@@ -87,7 +89,8 @@ public class CustomerReportController {
                 table.addCell(customer.getId()).setFontSize(fontTable);
                 table.addCell(customer.getCustomerName()).setFontSize(fontTable);
                 table.addCell(customer.getUserAccount().getEmail()).setFontSize(fontTable);
-                table.addCell(customer.getPhoneNumber() != null ? customer.getPhoneNumber() : "N/A" ).setFontSize(fontTable);
+                table.addCell(customer.getPhoneNumber() != null ? customer.getPhoneNumber() : "N/A").setFontSize(fontTable);
+                table.addCell(customer.getUserAccount().getIsEnable().toString());
             });
 
             document.add(table);

@@ -5,6 +5,7 @@ import com.enigma.wmb_api.dto.request.UpdateCustomerRequest;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;
+import com.enigma.wmb_api.service.UserService;
 import com.enigma.wmb_api.util.ValidationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,11 +31,13 @@ class CustomerServiceImplTest {
     private CustomerRepository customerRepository;
     @Mock
     private ValidationUtil validationUtil;
+    @Mock
+    private UserService userService;
     private CustomerService customerService;
 
     @BeforeEach
     void setUp() {
-        customerService = new CustomerServiceImpl(customerRepository, validationUtil);
+        customerService = new CustomerServiceImpl(customerRepository, validationUtil, userService);
     }
     @Test
     void create_savesAndReturnsCustomer() {
