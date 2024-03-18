@@ -27,4 +27,6 @@ public class Image {
 
     @Column(name = "content_type", nullable = false)
     private String contentType;
+
+
 }

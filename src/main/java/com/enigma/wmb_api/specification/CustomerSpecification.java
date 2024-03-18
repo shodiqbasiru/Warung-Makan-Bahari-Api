@@ -1,6 +1,6 @@
 package com.enigma.wmb_api.specification;
 
-import com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
+import  com.enigma.wmb_api.dto.request.PaginationCustomerRequest;
 import com.enigma.wmb_api.entity.Customer;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
